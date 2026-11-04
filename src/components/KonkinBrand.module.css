@@ -1,0 +1,11 @@
+.brand { display: block; width: 100%; max-width: 190px; margin: 0 auto; border-radius: 8px; }
+.brand img { width: 100%; height: auto; vertical-align: middle; }
+.brand > .dark { display: block; }
+.brand > .light { display: none; }
+:global(html[data-theme='light']) .brand > .dark { display: none; }
+:global(html[data-theme='light']) .brand > .light { display: block; }
+@media (min-width: 701px) and (max-width: 950px) {
+  .brand { width: 58px; height: 32px; overflow: hidden; }
+  .brand img { width: 68px; max-width: none; transform: translate(-5px,-4px); }
+}
+@media (max-width: 700px) { .brand { width: 140px; margin: 0; } }

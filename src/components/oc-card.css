@@ -1,0 +1,226 @@
+/* КАРТОЧКА НАРЯДА: жёсткая геометрия. Все блоки имеют фиксированные размеры,
+   поэтому при нажатии кнопок и смене текста карточка не меняет размеры.
+   Поверхность (стекло, рамка, параллакс) — в theme-glass.css */
+
+.oc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+  width: 100%;
+}
+@media (max-width: 1500px) { .oc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 1000px) { .oc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px)  { .oc-grid { grid-template-columns: 1fr; } }
+
+.oc-card {
+  --oc-accent: #46525f;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  height: 500px;
+  display: grid;
+  grid-template-rows: 44px 250px 1fr;
+  row-gap: 8px;
+  min-width: 0;
+  padding: 12px 14px;
+  overflow: hidden;
+  contain: layout paint;
+}
+.oc-card.status-new { --oc-accent: #5b8fd0; }
+.oc-card.status-in_progress { --oc-accent: #d9902f; }
+.oc-card.status-done { --oc-accent: #4fa584; }
+
+/* Шапка */
+.oc-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 0;
+  width: 100%;
+}
+.oc-num { font-size: 11px; letter-spacing: .6px; color: var(--muted); line-height: 1.2; }
+.oc-head h3 {
+  margin: 0;
+  max-width: 100%;
+  font-size: 16px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oc-alert { margin: 0; padding: 6px 8px; font-size: 12px; }
+
+/* Верх: дуга слева фиксированной ширины, кнопки справа */
+.oc-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  column-gap: 10px;
+  align-items: center;
+  min-width: 0;
+  height: 250px;
+}
+.oc-teeth {
+  min-width: 0;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.oc-teeth > * { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.oc-teeth svg {
+  display: block;
+  width: auto !important;
+  height: 250px !important;
+  max-width: 100% !important;
+  max-height: 250px !important;
+  margin: 0 auto;
+  overflow: visible;
+}
+/* Номера зубов на карточке не показываем */
+.oc-teeth text { display: none !important; }
+.oc-teeth title { display: none; }
+
+.oc-rail {
+  width: 40px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.oc-btn {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, .10);
+  background: rgba(255, 255, 255, .05);
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color .2s ease, color .2s ease;
+}
+.oc-btn svg { width: 16px; height: 16px; }
+.oc-btn:hover { background: rgba(255, 255, 255, .14); }
+.oc-btn.on { color: var(--orange); }
+.oc-btn.danger:hover { color: #ff7b7b; }
+
+/* Строка статуса: фиксированная ширина каждого элемента */
+.oc-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+}
+.oc-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+}
+.oc-row .paid-toggle,
+.oc-row .paid-toggle.compact {
+  width: 150px;
+  height: 30px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  justify-content: flex-start;
+}
+.oc-row select.status {
+  width: 100%;
+  height: 30px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Даты и суммы: три фиксированные колонки, остаток — только если есть */
+.oc-mini {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 8px;
+  height: 22px;
+  font-size: 13px;
+}
+.oc-mini > div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+}
+.oc-mini dt { color: var(--muted); display: flex; font-size: 12px; flex: 0 0 auto; }
+.oc-mini dd {
+  margin: 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+/* Остаток — красным, и только когда он есть */
+.oc-mini dd.warn,
+.oc-rest { color: #ff5a5a !important; }
+
+/* Врачи: фиксированная высота блока внизу карточки */
+.oc-doctors { display: flex; flex-direction: column; gap: 5px; }
+.oc-doctors-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  line-height: 1;
+  height: 12px;
+}
+.oc-doctor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  min-width: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, .10);
+  background: rgba(255, 255, 255, .03);
+  color: var(--muted);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+.oc-doctor:hover { color: var(--text); }
+.oc-doctor.on { color: var(--text); }
+.oc-doctor:disabled { opacity: .6; cursor: progress; }
+.oc-doctor-check {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .25);
+  color: #fff;
+}
+.oc-doctor.on .oc-doctor-check { background: #4fa584; border-color: #4fa584; }
+.oc-doctor-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

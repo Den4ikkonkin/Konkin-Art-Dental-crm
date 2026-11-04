@@ -1,0 +1,197 @@
+/* ============================================================
+   ЗУБНАЯ СХЕМА + ОБЪЁМ КАРТОЧЕК НАРЯДОВ
+   ------------------------------------------------------------
+   Один файл вместо двух: здесь и цвета зубов, и объём карточек.
+   Подключается страницей нарядов, поэтому переопределять глобальные
+   классы можно прямо отсюда.
+
+   ЧТО ИЗМЕНЕНО:
+   1. Цвета зубов поменяны местами между темами:
+      • тёмная  — светлые зубы, тёмные цифры
+      • светлая — серые зубы, белые цифры
+   2. Карточки стали объёмнее: блик сверху, двойная тень, глубокое
+      скругление. Сделано через свободный псевдоэлемент ::before,
+      чтобы не воевать со специфичностью существующих правил.
+   ============================================================ */
+
+/* ---------- 1. Переменные зубов ---------- */
+
+.wrap {
+  /* ТЁМНАЯ ТЕМА: зубы светлые, цифры тёмные */
+  --tooth-base: #d5dbe3;
+  --tooth-line: #97a3b1;
+  --fissure: #000000;
+  --label: #1c2229;
+
+  width: 100%;
+  min-width: 0;
+}
+
+:global(html[data-theme='light']) .wrap {
+  /* СВЕТЛАЯ ТЕМА: зубы тёмно-серые, цифры белые */
+  --tooth-base: #949daa;
+  --tooth-line: #6e7885;
+  --fissure: #000000;
+  --label: #ffffff;
+}
+
+/* ---------- 2. Схема ---------- */
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 168px;
+  margin: 0;
+  overflow: visible;
+  user-select: none;
+}
+
+.compact .svg { max-height: 132px; }
+
+.tooth { pointer-events: none; }
+
+.crown {
+  fill: var(--crown-color);
+  stroke: var(--tooth-line);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+  transition: fill 200ms ease, filter 200ms ease;
+}
+
+.detail { pointer-events: none; }
+.detail path {
+  fill: none;
+  stroke: var(--fissure);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Цифра на зубе. Читаемость важнее буквального следования цвету:
+   на цветной заливке (светлый лайм, сирень) белая цифра теряется,
+   поэтому у назначенных зубов она всегда тёмная. */
+.label {
+  fill: var(--label);
+  stroke: none;
+  font: 600 30px Arial, sans-serif;
+  pointer-events: none;
+}
+
+/* Назначенный зуб: заливка цветом работы + цветной контур */
+.picked .crown {
+  stroke: var(--tooth-accent);
+  stroke-width: 1.4;
+  filter: drop-shadow(0 0 5px var(--tooth-accent))
+          drop-shadow(0 0 11px #ffa05266);
+}
+.picked .detail path { stroke: #000000; }
+.picked .label { fill: #1c2229; stroke: none; }
+
+/* В светлой теме ореола нет — только обводка */
+:global(html[data-theme='light']) .picked .crown {
+  filter: none;
+  stroke-width: 1.2;
+}
+
+/* ---------- 3. Объём карточек нарядов ----------
+   Псевдоэлемент ::before на карточке раньше не использовался,
+   поэтому эти правила не конфликтуют ни с чем: они просто
+   добавляют новый слой поверх фона карточки.
+
+   Слои объёма:
+     • внешняя мягкая тень снизу — карточка «приподнята» над фоном
+     • верхний глянцевый блик — имитация источника света сверху
+     • внутренняя тень по краям — эффект толщины материала
+*/
+
+:global(.order-card)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+
+  /* Блик сверху + едва заметное затемнение к низу */
+  background: linear-gradient(
+    180deg,
+    #ffffff14 0%,
+    #ffffff08 18%,
+    transparent 42%,
+    transparent 78%,
+    #0000001f 100%
+  );
+
+  /* Тень под карточкой + внутренняя фаска по краям */
+  box-shadow:
+    0 2px 4px #0000001f,
+    0 18px 38px -8px #0000005c,
+    0 34px 64px -22px #0000004a,
+    inset 0 1px 0 #ffffff26,
+    inset 0 -1px 0 #00000033,
+    inset 1px 0 0 #ffffff0f,
+    inset -1px 0 0 #ffffff0f;
+
+  transition: box-shadow .09s ease;
+}
+
+/* При наведении тень уходит глубже — карточка словно отрывается от пола */
+:global(.order-card):hover::before {
+  box-shadow:
+    0 4px 8px #00000026,
+    0 26px 52px -10px #00000075,
+    0 46px 84px -26px #00000057,
+    inset 0 1px 0 #ffffff33,
+    inset 0 -1px 0 #00000038,
+    inset 1px 0 0 #ffffff14,
+    inset -1px 0 0 #ffffff14;
+}
+
+/* Светлая тема: те же слои, но тени мягче и менее чёрные,
+   иначе на белом они выглядят как грязь */
+:global(html[data-theme='light']) :global(.order-card)::before {
+  background: linear-gradient(
+    180deg,
+    #ffffffb3 0%,
+    #ffffff66 20%,
+    transparent 46%,
+    transparent 80%,
+    #0000000a 100%
+  );
+  box-shadow:
+    0 1px 2px #0000000d,
+    0 10px 24px -6px #0000001a,
+    0 22px 44px -18px #00000017,
+    inset 0 1px 0 #ffffffcc,
+    inset 0 -1px 0 #0000000f;
+}
+
+:global(html[data-theme='light']) :global(.order-card):hover::before {
+  box-shadow:
+    0 2px 5px #00000012,
+    0 16px 34px -8px #00000026,
+    0 30px 58px -20px #0000001f,
+    inset 0 1px 0 #ffffffdd,
+    inset 0 -1px 0 #00000014;
+}
+
+/* Скругление карточки: было 18px, стало 22px — форма читается мягче.
+   Селектор с html даёт большую специфичность, чем одиночный .order-card,
+   поэтому правило применяется в обеих темах независимо от порядка файлов. */
+:global(html) :global(.order-card) {
+  border-radius: 22px;
+}
+
+/* Контент карточки выше блика, иначе блик перекрыл бы текст */
+:global(.order-card) > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Доступность ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .crown,
+  :global(.order-card)::before { transition: none; }
+}

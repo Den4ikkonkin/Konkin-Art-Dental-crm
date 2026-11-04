@@ -1,0 +1,213 @@
+/* ============================================================
+   СТЕКЛО, РАМКИ, ПАРАЛЛАКС — карточки нарядов и календарь.
+   Фон приложения не трогаем (берётся из globals.css).
+   Стекло прозрачное, без матового шума.
+   ============================================================ */
+
+/* Плавный переход между темами */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: background-color .7s ease, background-image .7s ease, border-color .7s ease,
+    color .6s ease, box-shadow .7s ease, fill .6s ease, stroke .6s ease !important;
+}
+
+/* Панели: стекло */
+html[data-theme='dark'] .sidebar,
+html[data-theme='dark'] .topbar,
+html[data-theme='dark'] .panel,
+html[data-theme='dark'] .metric,
+html[data-theme='dark'] .hero,
+html[data-theme='dark'] .patient-card,
+html[data-theme='dark'] .files-panel,
+html[data-theme='dark'] .file-card,
+html[data-theme='dark'] .auth-card {
+  background: linear-gradient(160deg, rgba(38, 46, 56, .55), rgba(18, 23, 30, .55));
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-color: rgba(255, 255, 255, .08);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+html[data-theme='light'] .sidebar,
+html[data-theme='light'] .topbar,
+html[data-theme='light'] .panel,
+html[data-theme='light'] .metric,
+html[data-theme='light'] .hero,
+html[data-theme='light'] .patient-card,
+html[data-theme='light'] .files-panel,
+html[data-theme='light'] .file-card,
+html[data-theme='light'] .auth-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, .86), rgba(255, 250, 244, .74));
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  border-color: rgba(150, 110, 70, .16);
+  box-shadow: 0 16px 40px rgba(120, 84, 48, .12), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+/* Карточки нарядов и дни календаря: прозрачное стекло */
+html .oc-card,
+html .calendar-day {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: linear-gradient(155deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .03) 55%, rgba(255, 255, 255, .06));
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .10) inset,
+    0 10px 26px rgba(0, 0, 0, .30),
+    0 2px 6px rgba(0, 0, 0, .18);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform .25s ease-out, box-shadow .3s ease, border-color .3s ease;
+}
+
+/* Рамка карточки нарядов: тусклая, с мягким свечением цвета статуса */
+html .oc-card {
+  border-color: color-mix(in srgb, var(--oc-accent) 34%, transparent);
+  box-shadow:
+    0 0 16px -8px color-mix(in srgb, var(--oc-accent) 42%, transparent),
+    0 1px 0 rgba(255, 255, 255, .10) inset,
+    0 10px 26px rgba(0, 0, 0, .30),
+    0 2px 6px rgba(0, 0, 0, .18);
+}
+html .oc-card.is-archived { opacity: .7; }
+
+/* Календарь: рамка по числу пациентов; пустой день — без рамки */
+html .calendar-day.tone-empty { border-color: transparent; }
+html .calendar-day.tone-many {
+  border-color: rgba(79, 165, 132, .42);
+  box-shadow: 0 0 16px -8px rgba(79, 165, 132, .5), 0 10px 26px rgba(0, 0, 0, .30);
+}
+html .calendar-day.tone-big {
+  border-color: rgba(214, 88, 96, .45);
+  box-shadow: 0 0 16px -8px rgba(214, 88, 96, .5), 0 10px 26px rgba(0, 0, 0, .30);
+}
+
+/* Светлая тема: прозрачное тёплое стекло */
+html[data-theme='light'] .oc-card,
+html[data-theme='light'] .calendar-day {
+  background: linear-gradient(155deg, rgba(255, 255, 255, .62), rgba(255, 250, 244, .38));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .9) inset,
+    0 10px 26px rgba(120, 84, 48, .12),
+    0 2px 6px rgba(120, 84, 48, .06);
+}
+html[data-theme='light'] .oc-card {
+  border-color: color-mix(in srgb, var(--oc-accent) 42%, transparent);
+  box-shadow:
+    0 0 16px -8px color-mix(in srgb, var(--oc-accent) 40%, transparent),
+    0 1px 0 rgba(255, 255, 255, .9) inset,
+    0 10px 26px rgba(120, 84, 48, .12),
+    0 2px 6px rgba(120, 84, 48, .06);
+}
+html[data-theme='light'] .calendar-day.tone-empty { border-color: transparent; }
+html[data-theme='light'] .calendar-day.tone-many { border-color: rgba(76, 158, 119, .55); }
+html[data-theme='light'] .calendar-day.tone-big { border-color: rgba(200, 78, 86, .5); }
+html[data-theme='light'] .oc-mini dd.warn,
+html[data-theme='light'] .oc-rest { color: #D7263D !important; }
+
+/* Кнопки и галочки врача на стекле */
+html[data-theme='light'] .oc-btn { background: rgba(255, 255, 255, .6); border-color: rgba(120, 84, 48, .14); }
+html[data-theme='light'] .oc-btn:hover { background: #fff; }
+html[data-theme='light'] .oc-doctor { background: rgba(255, 255, 255, .5); border-color: rgba(120, 84, 48, .14); }
+html[data-theme='light'] .oc-doctor.on { background: #E6F6EE; border-color: #4C9E77; color: #2F7A57; }
+html[data-theme='light'] .oc-doctor-check { border-color: #C9B9A6; }
+html[data-theme='light'] .oc-doctor.on .oc-doctor-check { background: #4C9E77; border-color: #4C9E77; }
+
+/* Параллакс: заметный наклон карточки за курсором, без свечения */
+.oc-card::before, .oc-card::after,
+.calendar-day::before, .calendar-day::after,
+.order-card::before, .order-card::after {
+  content: none !important;
+  display: none !important;
+}
+html .oc-card.tilt,
+html .calendar-day.tilt {
+  transform: perspective(800px)
+    rotateX(calc((var(--py, .5) - .5) * -9deg))
+    rotateY(calc((var(--px, .5) - .5) * 11deg))
+    translateZ(10px);
+  transition: transform .18s ease-out, box-shadow .3s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  html .oc-card.tilt, html .calendar-day.tilt { transform: none; }
+}
+
+/* ---------- Полоса загрузки файлов ---------- */
+.upload-state {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .08);
+}
+html[data-theme='light'] .upload-state { background: rgba(255, 255, 255, .55); border-color: rgba(120, 84, 48, .12); }
+.upload-row { display: flex; align-items: center; gap: 8px; font-size: 12px; min-width: 0; }
+.upload-name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+.upload-pct { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+.upload-bar {
+  height: 6px;
+  width: 100%;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .12);
+  overflow: hidden;
+}
+html[data-theme='light'] .upload-bar { background: rgba(120, 84, 48, .14); }
+.upload-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #8A949F, #B9C3CE);
+  transition: width .2s linear;
+}
+html[data-theme='light'] .upload-bar > i { background: linear-gradient(90deg, #A6AEBA, #C9D2DC); }
+
+/* ---------- Наведение: карточка приподнимается ---------- */
+html .oc-card,
+html .calendar-day {
+  transition: translate .2s ease-out, transform .25s ease-out, box-shadow .3s ease, border-color .3s ease;
+}
+html .oc-card:hover,
+html .calendar-day:hover {
+  translate: 0 -5px;
+}
+
+/* ---------- Календарь: цвет контура по легенде ---------- */
+html .calendar-day.tone-empty { border-color: rgba(70, 82, 95, .7); }
+html .calendar-day.tone-one {
+  border-color: rgba(61, 106, 153, .9);
+  box-shadow: 0 0 14px -6px rgba(61, 106, 153, .6), 0 10px 26px rgba(0, 0, 0, .30);
+}
+html .calendar-day.tone-many {
+  border-color: rgba(67, 129, 90, .9);
+  box-shadow: 0 0 14px -6px rgba(67, 129, 90, .6), 0 10px 26px rgba(0, 0, 0, .30);
+}
+html .calendar-day.tone-big {
+  border-color: rgba(180, 70, 75, .9);
+  box-shadow: 0 0 14px -6px rgba(180, 70, 75, .6), 0 10px 26px rgba(0, 0, 0, .30);
+}
+html[data-theme='light'] .calendar-day.tone-empty { border-color: rgba(120, 84, 48, .25); }
+html[data-theme='light'] .calendar-day.tone-one { border-color: rgba(61, 106, 153, .85); }
+html[data-theme='light'] .calendar-day.tone-many { border-color: rgba(67, 129, 90, .85); }
+html[data-theme='light'] .calendar-day.tone-big { border-color: rgba(180, 70, 75, .85); }
+
+/* ---------- Размер на Диске ---------- */
+.size-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: rgba(128, 136, 146, .18);
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.storage-row { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.storage-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.storage-card svg text { fill: var(--text); }

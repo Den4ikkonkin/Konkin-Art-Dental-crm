@@ -1,0 +1,337 @@
+/* ============================================================
+   ПРЕМИАЛЬНЫЙ СЛОЙ: карточки нарядов, календарь, дашборды
+   ------------------------------------------------------------
+   1. Прозрачность: полупрозрачное стекло с размытием фона.
+   2. Параллакс: наклоняется сама карточка (а не курсор).
+      Свет живёт внутри карточки и смещается вместе с указателем —
+      это блик на её поверхности, он не ходит за курсором по странице.
+   3. Блик и подсветка рамки зависят от --px / --py (ставит Parallax.tsx).
+   Отключается при prefers-reduced-motion и на сенсорных экранах.
+   ============================================================ */
+
+/* ---------- Стекло: прозрачность у карточек нарядов ---------- */
+
+html .order-card {
+  background:
+    radial-gradient(140% 100% at var(--px, .5) calc(var(--py, .5) * 100%), rgba(255,255,255,.075) 0%, transparent 58%),
+    linear-gradient(160deg, rgba(38, 48, 58, .62) 0%, rgba(18, 23, 29, .56) 100%);
+  backdrop-filter: blur(14px) saturate(1.25);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition:
+    transform .35s cubic-bezier(.2,.7,.2,1),
+    box-shadow .35s ease,
+    border-color .35s ease;
+}
+
+/* Блик внутри карточки: виден только при наклоне, следует за пальцем/мышью на самой карточке. */
+html .order-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity .35s ease;
+  background: radial-gradient(
+    260px circle at calc(var(--px, .5) * 100%) calc(var(--py, .5) * 100%),
+    rgba(255,255,255,.20) 0%,
+    rgba(255,255,255,.06) 38%,
+    transparent 68%
+  );
+  mix-blend-mode: screen;
+}
+
+/* Наклон самой карточки и подъём. Свечение рамки растёт вместе с наклоном. */
+html body .order-card.tilt {
+  transform:
+    perspective(900px)
+    rotateX(calc((var(--py, .5) - .5) * -7deg))
+    rotateY(calc((var(--px, .5) - .5) * 7deg))
+    translateY(-8px)
+    scale(1.012);
+  box-shadow:
+    0 0 0 1px var(--card-halo),
+    0 0 22px var(--card-halo),
+    0 0 48px var(--card-halo),
+    0 26px 48px #00000070,
+    inset 0 1px 0 rgba(255,255,255,.12);
+  border-color: var(--card-accent);
+}
+html body .order-card.tilt::before { opacity: 1; }
+
+/* Старое свечение курсора отключено: подсветка теперь только у карточки. */
+html .order-card::after { opacity: .5; }
+
+/* Без наклона при hover: только мягкий подъём. */
+html .order-card:hover { transform: translateY(-6px); }
+
+/* ---------- Календарь пациентов: то же стекло и наклон карточки дня ---------- */
+
+.calendar-day {
+  background: linear-gradient(160deg, rgba(38,48,58,.62), rgba(18,23,29,.56));
+  backdrop-filter: blur(12px) saturate(1.2);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
+}
+.calendar-day::before {
+  background: radial-gradient(
+    150px circle at calc(var(--px, .5) * 100%) calc(var(--py, .5) * 100%),
+    rgba(255,255,255,.18) 0%,
+    rgba(255,255,255,.05) 40%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  transition: opacity .35s ease;
+}
+.calendar-day.tilt {
+  transform:
+    perspective(700px)
+    rotateX(calc((var(--py, .5) - .5) * -8deg))
+    rotateY(calc((var(--px, .5) - .5) * 8deg))
+    translateY(-6px)
+    scale(1.02);
+  transition: transform .2s ease, box-shadow .35s ease, border-color .35s ease;
+}
+
+/* ---------- Премиальная отделка: тонкая золотистая кромка ---------- */
+
+html .order-card::before,
+.calendar-day::before { z-index: 2; }
+
+html .order-card {
+  background-clip: padding-box;
+}
+.metric {
+  background: linear-gradient(135deg, rgba(36,44,54,.66), rgba(18,22,28,.6));
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 30px #00000033;
+}
+.panel {
+  background: linear-gradient(130deg, rgba(28,34,42,.72), rgba(20,25,31,.7));
+  backdrop-filter: blur(10px);
+}
+
+/* ---------- Кликабельная метрика ---------- */
+
+.metric.clickable {
+  cursor: pointer;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.metric.clickable:hover,
+.metric.clickable:focus-visible {
+  transform: translateY(-3px);
+  border-color: #c47a2e;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 14px 34px #0000004a;
+  outline: none;
+}
+.metric.clickable small { color: #d9a46a; }
+
+/* ---------- Кнопка «Календарь оплат» у выбора месяца ---------- */
+
+.payment-cal-btn {
+  white-space: nowrap;
+}
+
+/* ---------- Широкие модальные окна: дашборд и календарь оплат ---------- */
+
+.day-modal.wide-modal {
+  width: min(960px, 100%);
+  max-height: min(90vh, 900px);
+  background: linear-gradient(168deg, rgba(27,34,42,.88) 0%, rgba(18,23,29,.9) 100%);
+  backdrop-filter: blur(18px) saturate(1.2);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 34px 80px #00000099, inset 0 1px 0 rgba(255,255,255,.07);
+}
+.wide-body { padding-bottom: 24px; }
+
+/* Статистика вверху дашборда */
+.unpaid-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 6px 0 14px;
+}
+.unpaid-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 13px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.07);
+  color: var(--muted);
+  font-size: 11px;
+}
+.unpaid-stat b { color: var(--text); font-size: 20px; font-weight: 600; }
+.unpaid-stat.accent b { color: #f0a0a3; }
+
+/* Пациенты чипами */
+.unpaid-patients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.unpaid-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(196,122,46,.35);
+  font-size: 12px;
+}
+.unpaid-chip b { font-weight: 600; }
+.unpaid-chip small { color: var(--muted); font-size: 10px; }
+.unpaid-chip em { font-style: normal; color: #f0a0a3; font-weight: 600; }
+
+/* Сетка карточек неоплаченных */
+.unpaid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.unpaid-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 14px 12px;
+  border-radius: 16px;
+  border: 1.5px solid #46525f;
+  background: linear-gradient(160deg, rgba(38,48,58,.6), rgba(18,23,29,.55));
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 30px #00000040, inset 0 1px 0 rgba(255,255,255,.06);
+}
+.unpaid-card.status-new { border-color: #4a7cb0; }
+.unpaid-card.status-in_progress { border-color: #c47a2e; }
+.unpaid-card.status-done { border-color: #4e8f63; }
+.unpaid-card-head { display: flex; justify-content: space-between; align-items: center; }
+.unpaid-num { color: var(--muted); font-size: 11px; letter-spacing: .5px; }
+.unpaid-status {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  color: var(--muted);
+}
+.unpaid-status.in_progress { color: #f0a052; }
+.unpaid-status.done { color: #8fd29d; }
+.unpaid-card h3 { margin: 2px 0 0; font-size: 15px; line-height: 1.2; }
+.unpaid-doctor { margin: 0; font-size: 11px; color: var(--muted); }
+.unpaid-works { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.unpaid-work {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: var(--w);
+  background: color-mix(in srgb, var(--w) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--w) 40%, transparent);
+}
+.unpaid-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.unpaid-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4e8f63, #82C6AE);
+}
+.unpaid-money {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 6px 0 0;
+  font-size: 11px;
+}
+.unpaid-money dt { color: var(--muted); font-size: 10px; }
+.unpaid-money dd { margin: 2px 0 0; font-weight: 600; }
+.unpaid-money .rest dd { color: #f0a0a3; }
+.unpaid-money .green { color: #82C6AE; }
+.unpaid-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  font-size: 10px;
+  color: var(--muted);
+}
+.unpaid-card-foot a { color: #d9a46a; text-decoration: none; }
+.unpaid-card-foot a:hover { text-decoration: underline; }
+
+/* Календарь оплат */
+.payment-nav { display: flex; justify-content: flex-end; gap: 6px; margin: 4px 0 10px; }
+.payment-grid .calendar-day { min-height: 74px; }
+.payment-grid .calendar-day.tone-empty { opacity: .8; }
+.payment-day.tone-paid {
+  --day-accent: #4e8f63;
+  --day-halo: rgba(130, 198, 174, .26);
+  --day-glow: rgba(130, 198, 174, .08);
+}
+.payment-day.is-today { outline: 1px dashed #d9a46a; outline-offset: 2px; }
+.payment-sum {
+  margin-top: auto;
+  font-size: 11px;
+  color: #82C6AE;
+  font-weight: 600;
+}
+.payment-detail {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.03);
+}
+.payment-detail h3 { margin: 0 0 8px; font-size: 14px; display: flex; gap: 6px; align-items: center; }
+.payment-detail ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.payment-detail li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+.payment-detail input[type='date'] {
+  background: #1a2129;
+  color: var(--text);
+  border: 1px solid #33404c;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.payment-detail.undated { border-color: rgba(196,122,46,.4); }
+
+/* Тёмная/светлая тема для стеклянного слоя */
+html[data-theme='light'] .unpaid-stat,
+html[data-theme='light'] .payment-detail {
+  background: rgba(255,255,255,.7);
+  border-color: #0000000f;
+}
+html[data-theme='light'] .unpaid-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.85), rgba(244,247,250,.8));
+  color: #2B333D;
+}
+html[data-theme='light'] .day-modal.wide-modal {
+  background: linear-gradient(168deg, rgba(255,255,255,.94), rgba(244,247,250,.94));
+}
+
+/* Сенсорные экраны и «меньше движения»: без наклона, только подъём. */
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  html body .order-card.tilt { transform: translateY(-6px); }
+  .calendar-day.tilt { transform: translateY(-6px); }
+  .unpaid-stats { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .unpaid-stats { grid-template-columns: 1fr; }
+  .unpaid-grid { grid-template-columns: 1fr; }
+}

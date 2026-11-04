@@ -1,0 +1,46 @@
+.chart {
+  --crown-base: #d4d6d8;
+  --crown-line: #9b9d9f;
+  --fissure: #4d5053;
+  --label: #202326;
+  width: 100%; min-width: 0;
+}
+:global(html[data-theme='light']) .chart {
+  --crown-base: #f7f4e5;
+  --crown-line: #dedacb;
+  --fissure: #7b786c;
+}
+.chart > .svg {
+  display: block; position: static; width: 100%; height: auto;
+  max-width: 440px; max-height: none; margin: 14px auto;
+  aspect-ratio: 785 / 1420; overflow: visible;
+  background: transparent; user-select: none;
+}
+.tooth { cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
+.crown {
+  fill: var(--crown-color); stroke: var(--crown-line); stroke-width: .7;
+  stroke-linejoin: round;
+  transition: fill 160ms ease, filter 160ms ease;
+}
+:global(html[data-theme='light']) .crown { filter: drop-shadow(2px 7px 5px #00000028); }
+.detail { pointer-events: none; }
+.detail path { fill: none; stroke: var(--fissure); stroke-width: 1.55; stroke-linecap: round; stroke-linejoin: round; }
+.selection {
+  fill: none; stroke: #ffa052; stroke-width: 1.8;
+  vector-effect: non-scaling-stroke; opacity: 0;
+  pointer-events: none; stroke-linejoin: round;
+  transition: opacity 120ms ease;
+}
+.tooth:hover .selection { opacity: .55; }
+.tooth:focus-visible .selection, .picked .selection {
+  opacity: 1; stroke-width: 2.5;
+  filter: drop-shadow(0 0 3px #ffa052b3);
+}
+.label {
+  fill: var(--label); stroke: #ffffffdf; stroke-width: 5px;
+  paint-order: stroke fill; stroke-linejoin: round;
+  font: 500  30px Arial, sans-serif;
+  pointer-events: none;
+}
+.chart > .hint { color: var(--muted); font-size: 11px; text-align: center; margin: 12px 0; }
+@media (prefers-reduced-motion: reduce) { .crown, .selection { transition: none; } }

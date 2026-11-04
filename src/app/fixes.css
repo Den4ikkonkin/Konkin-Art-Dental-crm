@@ -1,0 +1,679 @@
+
+/* ============================================================
+   ИСПРАВЛЕНИЯ РАЗМЕТКИ — ноябрь 2026
+   Добавлено отдельным блоком в конец globals.css, чтобы не
+   переписывать существующие правила и не ломать вёрстку там,
+   где она работает. Все правила точечные, с повышенной
+   специфичностью, где это нужно.
+   ============================================================ */
+
+/* ---------- 1. Боковая панель: кнопка «Выйти» больше не уезжает
+   ------------------------------------------------------------
+   ПРИЧИНА: у администратора 11 пунктов меню. При высоте окна
+   меньше ~1000px содержимое не помещалось, и блок профиля с
+   кнопкой «Выйти» уходил за нижний край. Панель position: fixed
+   без прокрутки — добраться до кнопки было нельзя.
+
+   РЕШЕНИЕ: меню становится прокручиваемой серединой, блок
+   профиля закрепляется внизу и всегда виден. */
+
+.sidebar {
+  overflow: hidden;
+}
+
+.sidebar > nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 -6px;
+  padding: 0 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #3a4653 transparent;
+}
+
+.sidebar > nav::-webkit-scrollbar { width: 4px; }
+.sidebar > nav::-webkit-scrollbar-thumb {
+  background: #3a4653;
+  border-radius: 4px;
+}
+
+/* Блок профиля — не сжимается и не уезжает */
+.sidebar-bottom {
+  flex: 0 0 auto;
+  margin-top: 10px;
+}
+
+/* Кнопка выхода — во всю ширину, заметная */
+.sidebar-out {
+  width: 100%;
+  margin-top: 10px;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+}
+
+/* На узких экранах, где панель превращается в иконки,
+   блок профиля скрывается — там выход доступен через меню */
+@media (max-width: 950px) and (min-width: 701px) {
+  .sidebar > nav { margin: 0; }
+}
+
+/* ---------- 2. Карточка наряда: фамилия врача не обрезается
+   ------------------------------------------------------------
+   ПРИЧИНА: .order-card-doctor имел height: 18px и
+   text-overflow: ellipsis при узкой колонке (112px + 26px
+   отданы дуге и кнопкам). «Ижерский» не помещался и
+   превращался в «Ижерс…» или исчезал вовсе.
+
+   РЕШЕНИЕ: строка растёт по содержимому, переносится на две
+   строки, иконка не сжимается. Колонка данных получает
+   минимальную ширину, чтобы фамилия помещалась целиком. */
+
+:global(html) :global(.order-card-doctor),
+.order-card-doctor {
+  height: auto;
+  min-height: 18px;
+  line-height: 1.3;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.order-card-doctor b {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.order-card-doctor svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+/* Данные карточки: колонка не уже 96px, чтобы «Ижерский» влезал */
+:global(html) :global(.order-card-body) {
+  grid-template-columns: 104px minmax(96px, 1fr) 26px;
+}
+
+@media (max-width: 1350px) {
+  :global(html) :global(.order-card-body) {
+    grid-template-columns: 96px minmax(92px, 1fr) 26px;
+  }
+}
+
+/* ---------- 3. Текст не выходит за границы карточек
+   ------------------------------------------------------------
+   ПРИЧИНА: длинные ФИО, названия работ и суммы выдавливали
+   содержимое за край карточки: у flex/grid-детей по умолчанию
+   min-width: auto, поэтому они не сжимаются меньше содержимого.
+
+   РЕШЕНИЕ: запрет переноса за границу + min-width: 0 у детей. */
+
+.order-card,
+.panel,
+.metric,
+.patient-card,
+.file-card,
+.files-panel,
+.card {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.order-card > *,
+.panel > *,
+.metric > * {
+  min-width: 0;
+}
+
+.order-card-head h3 {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ---------- 4. Таблицы: текст внутри ячеек не выходит за рамку
+   ------------------------------------------------------------
+   Раньше ячейки были white-space: nowrap у th, а td переносился
+   свободно — длинная фамилия врача расширяла таблицу и вылезала
+   за панель. Теперь ячейки переносятся, а таблица прокручивается
+   по горизонтали внутри .table-wrap. */
+
+td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Колонка врача — достаточная ширина для «Ижерский» */
+td.doctor-col,
+th.doctor-col {
+  min-width: 96px;
+}
+
+/* ---------- 5. Верхняя панель не ломается на узких экранах
+   ------------------------------------------------------------
+   Кнопки в шапке (тема, обновить, основное действие) при
+   недостатке места выдавливали заголовок. Теперь шапка
+   переносится, а заголовок сжимается. */
+
+.topbar {
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 88px;
+  height: auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.topbar > .row {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 8px;
+}
+
+.topbar-title > div {
+  min-width: 0;
+}
+
+.topbar-title strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- 6. Мобильная панель: кнопка выхода доступна
+   ------------------------------------------------------------
+   До 700px панель становится горизонтальной, а блок профиля
+   скрывался вместе с кнопкой «Выйти». Возвращаем его. */
+
+@media (max-width: 700px) {
+  .sidebar-bottom {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
+  .sidebar-bottom small {
+    margin-left: 0;
+    flex: 1 1 auto;
+  }
+  .sidebar-out {
+    width: auto;
+    margin-top: 0;
+    flex: 0 0 auto;
+    padding: 0 12px;
+  }
+}
+
+/* ---------- 7. Горизонтальная прокрутка вместо обрезки
+   ------------------------------------------------------------
+   Если содержимое всё же шире контейнера — оно должно
+   прокручиваться, а не исчезать за краем. */
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- 8. Кнопка «Выйти» в шапке как запасной вариант
+   ------------------------------------------------------------
+   На случай, если панель скрыта (мобильный режим), выход
+   всегда доступен из верхней панели. */
+
+.topbar-signout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--g-border, var(--line));
+  background: var(--g-fill-soft, transparent);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.topbar-signout:hover {
+  color: var(--text);
+  border-color: var(--orange);
+}
+
+@media (min-width: 951px) {
+  /* На широком экране кнопка в шапке не нужна — есть в панели */
+  .topbar-signout { display: none; }
+}
+
+/* ---------- 9. Формы и панели: длинные значения не ломают сетку
+   ------------------------------------------------------------
+   Поле с длинным ФИО или примечанием раздвигало панель шире
+   экрана. Теперь input сжимается, а не выдавливает соседей. */
+
+.form-meta { min-width: 0; }
+.form-meta > * { min-width: 0; }
+.field { min-width: 0; }
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Панель не позволяет содержимому выйти за свои границы */
+.panel {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.panel-heading {
+  flex-wrap: wrap;
+  gap: 10px;
+  row-gap: 8px;
+}
+
+/* Заголовки страниц переносятся, а не уезжают под кнопки */
+.page-heading {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- 10. Кнопки в строку не вылезают на мобильном
+   ------------------------------------------------------------ */
+@media (max-width: 700px) {
+  .row {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  .btn {
+    max-width: 100%;
+  }
+  .topbar {
+    padding: 10px 14px;
+  }
+  main {
+    padding: 20px 14px 32px;
+  }
+  footer {
+    padding: 16px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* ---------- 11. Длинные суммы и номера не разрывают ячейку
+   ------------------------------------------------------------ */
+td.num,
+.num {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Номер наряда и ФИО пациента в первом столбце */
+td:first-child b {
+  white-space: nowrap;
+}
+td:first-child span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ============================================================
+   ВЫРАВНИВАНИЕ: кнопки, числа, подписи
+   ------------------------------------------------------------
+   Что было не так на скриншотах:
+     • в таблице «Врачи» числа стояли по левому краю, а заголовки
+       колонок — тоже слева, из-за чего столбец «Сумма» висел
+       в воздухе без привязки к правому краю;
+     • в карточках техников подпись «Ждут примерки» переносилась
+       на две строки и цифра уезжала вниз;
+     • в карточках пациентов блоки статистики имели разную высоту,
+       потому что подписи занимали одну или две строки.
+
+   Все правила ниже выравнивают элементы по общей базовой линии
+   и запрещают «прыгающую» высоту.
+   ============================================================ */
+
+/* ---------- Заголовки числовых колонок — по правому краю ---------- */
+table th.num,
+table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Таблица «Врачи»: числа не растягивают колонки ---------- */
+table th.num,
+table td.num {
+  white-space: nowrap;
+  padding-left: 16px;
+}
+
+/* Первая колонка таблицы забирает свободное место, числовые —
+   по содержимому. Так сумма прижата вправо, а не висит посередине. */
+table.responsive th:first-child,
+table.responsive td:first-child {
+  width: 100%;
+}
+table.responsive th.num,
+table.responsive td.num {
+  width: 1%;
+}
+
+/* ---------- Карточки техников ---------- */
+.queue-card,
+.tech-card {
+  min-height: 0;
+}
+
+/* Строка статистики: подпись и число на одной базовой линии,
+   подпись не переносится, число не уезжает вниз. */
+.tech-stats {
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  align-items: baseline;
+}
+
+.tech-stats > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.tech-stats dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  line-height: 22px;
+}
+
+.tech-stats dd {
+  line-height: 22px;
+  text-align: right;
+  min-width: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1500px) {
+  /* На узких экранах подписи «Ждут примерки» не влезают в две
+     колонки — переводим статистику в один столбец. */
+  .tech-stats { grid-template-columns: 1fr; }
+}
+
+/* Кнопка «Портфолио» прижата к низу карточки и выровнена по правому краю */
+.queue-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+/* Карточки в одном ряду одинаковой высоты */
+.queue-grid {
+  align-items: stretch;
+}
+.queue-grid > * {
+  height: 100%;
+}
+
+/* ---------- Карточки пациентов ---------- */
+.patient-head {
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.patient-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+/* Блоки статистики выровнены по верху и одинаковой высоты,
+   подписи в одну строку. */
+.patient-stats {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.patient-stats > span {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 3px;
+  min-width: 74px;
+}
+
+.patient-stats small {
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-stats b {
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Кнопки справа от статистики прижаты к верху и не растягиваются */
+.patient-head > .row {
+  align-items: center;
+  align-self: flex-start;
+  margin-left: auto;
+}
+
+/* Строка наряда внутри пациента: одинаковая высота, номера не прыгают */
+.patient-order {
+  display: grid;
+  grid-template-columns: 8px auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 11px;
+  min-height: 22px;
+}
+
+.patient-order b {
+  min-width: 52px;
+  font-variant-numeric: tabular-nums;
+}
+
+.patient-order span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .patient-order {
+    grid-template-columns: 8px auto minmax(0, 1fr);
+    row-gap: 4px;
+  }
+  .patient-stats > span { min-width: 64px; }
+}
+
+/* ---------- Кнопки в шапках панелей ---------- */
+.panel-heading {
+  align-items: center;
+  min-height: 34px;
+}
+
+.panel-heading .row {
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Кнопки одинаковой высоты в одном ряду */
+.row.nowrap > .btn,
+.row.nowrap > .btn.small,
+.row.nowrap > .icon-btn {
+  align-self: center;
+}
+
+/* ---------- Редактор цветов ---------- */
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.preset-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  text-align: left;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--g-border, var(--line));
+  background: var(--g-fill-soft, var(--panel2));
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s ease, transform .15s ease;
+}
+
+.preset-card:hover {
+  border-color: var(--orange);
+  transform: translateY(-2px);
+}
+
+.preset-swatches {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.preset-swatches i {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, .16);
+}
+
+.palette-editor {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 4px 0 20px;
+}
+
+.color-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--g-border, var(--line));
+  background: var(--g-fill-soft, transparent);
+  min-width: 0;
+}
+
+.color-field-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.color-field-head b {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.color-field-head small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.color-field-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-field-input input[type='color'] {
+  width: 38px;
+  height: 32px;
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid var(--g-border, var(--line));
+  background: transparent;
+  cursor: pointer;
+  flex: 0 0 38px;
+}
+
+.color-field-input input[type='text'] {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--g-border, var(--line));
+  background: var(--g-input, transparent);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  letter-spacing: .3px;
+  text-transform: lowercase;
+}
+
+.color-field-input input[type='text']:focus {
+  outline: 2px solid var(--orange);
+  outline-offset: 1px;
+}
+
+.color-field-input .input-bad {
+  border-color: #d9534f !important;
+}
+
+.palette-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.palette-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--g-border, var(--line));
+}
+
+.preview-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 550;
+}
+
+@media (max-width: 700px) {
+  .preset-grid { grid-template-columns: 1fr; }
+  .palette-editor { grid-template-columns: 1fr; }
+  .palette-actions > .btn { width: 100%; }
+}

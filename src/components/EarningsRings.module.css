@@ -1,0 +1,183 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.periodBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.periodControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.select {
+  min-width: 170px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(16, 22, 29, 0.55);
+  color: inherit;
+}
+
+.toggle {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.toggle button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.7;
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toggle button.active {
+  background: rgba(233, 160, 92, 0.16);
+  color: #e9a05c;
+  opacity: 1;
+}
+
+.exportBtn {
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.smallRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 17px;
+  padding: 20px;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 20px 44px -22px rgba(0, 0, 0, 0.55);
+  min-width: 0;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.cardSub {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-bottom: 12px;
+}
+
+.ringBox {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+.ringBox svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.legend {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.legendRow {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 9px;
+}
+
+.legendRow:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legendLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legendNum {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.legendPct {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+  min-width: 42px;
+  text-align: right;
+}
+
+.bigCard {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.bigTotal {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+@media (max-width: 950px) {
+  .smallRow {
+    grid-template-columns: 1fr;
+  }
+  .bigCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+:global(html[data-theme='light']) .card {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(16, 21, 27, 0.07);
+}
+
+:global(html[data-theme='light']) .select {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(16, 21, 27, 0.12);
+  color: #10151b;
+}
