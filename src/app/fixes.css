@@ -70,7 +70,7 @@
    строки, иконка не сжимается. Колонка данных получает
    минимальную ширину, чтобы фамилия помещалась целиком. */
 
-:global(html) :global(.order-card-doctor),
+html .order-card-doctor,
 .order-card-doctor {
   height: auto;
   min-height: 18px;
@@ -99,12 +99,12 @@
 }
 
 /* Данные карточки: колонка не уже 96px, чтобы «Ижерский» влезал */
-:global(html) :global(.order-card-body) {
+html .order-card-body {
   grid-template-columns: 104px minmax(96px, 1fr) 26px;
 }
 
 @media (max-width: 1350px) {
-  :global(html) :global(.order-card-body) {
+  html .order-card-body {
     grid-template-columns: 96px minmax(92px, 1fr) 26px;
   }
 }
