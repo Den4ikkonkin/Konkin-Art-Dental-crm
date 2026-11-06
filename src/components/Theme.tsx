@@ -34,11 +34,12 @@ export function ThemeProvider({ children, initial }: { children: ReactNode; init
   }, [initial])
 
   function setTheme(t: Theme) {
-    // Плавный переход: на время смены включаем transition для всех цветов.
+    // Переключение мгновенное: на время смены темы гасим все CSS-переходы,
+    // чтобы цвета не переливались. Класс снимается почти сразу.
     const root = document.documentElement
     root.classList.add('theme-switching')
     if (switchTimer) window.clearTimeout(switchTimer)
-    switchTimer = window.setTimeout(() => root.classList.remove('theme-switching'), 800)
+    switchTimer = window.setTimeout(() => root.classList.remove('theme-switching'), 60)
     setThemeState(t)
     apply(t)
     try { localStorage.setItem(KEY, t) } catch { /* приватный режим */ }
