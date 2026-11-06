@@ -20,15 +20,16 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* Карточка никогда не уже 300px. Иначе средняя колонка (фамилия врача)
+     сжимается до 70-90px и «Ижерский» обрезается справа.
+     auto-fill сам решает, сколько карточек влезает: при широком окне 5,
+     при среднем 4 — но каждая не уже 300px, поэтому фамилия видна всегда. */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 10px;
   align-items: stretch;
 }
 
-@media (max-width: 1700px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (max-width: 1350px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 1050px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 720px)  { .grid { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
 
 /* ---------- 2. Верхняя панель страницы ---------- */
 
