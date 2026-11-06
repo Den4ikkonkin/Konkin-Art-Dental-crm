@@ -9,8 +9,10 @@ html.theme-switching,
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after {
-  transition: background-color .7s ease, background-image .7s ease, border-color .7s ease,
-    color .6s ease, box-shadow .7s ease, fill .6s ease, stroke .6s ease !important;
+  /* Тема переключается мгновенно: на время смены гасим все переходы,
+     иначе браузер плавно тянет каждый цвет по 0.7 с. */
+  transition: none !important;
+  animation-duration: 0s !important;
 }
 
 /* Панели: стекло */
