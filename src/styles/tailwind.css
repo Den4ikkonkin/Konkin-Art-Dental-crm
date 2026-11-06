@@ -1,0 +1,76 @@
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@source '../app';
+@source '../components';
+
+@theme inline {
+  --color-background: var(--sh-background);
+  --color-foreground: var(--sh-foreground);
+  --color-card: var(--sh-card);
+  --color-card-foreground: var(--sh-card-foreground);
+  --color-popover: var(--sh-popover);
+  --color-popover-foreground: var(--sh-popover-foreground);
+  --color-primary: var(--sh-primary);
+  --color-primary-foreground: var(--sh-primary-foreground);
+  --color-secondary: var(--sh-secondary);
+  --color-secondary-foreground: var(--sh-secondary-foreground);
+  --color-muted-foreground: var(--sh-muted-foreground);
+  --color-accent: var(--sh-accent);
+  --color-accent-foreground: var(--sh-accent-foreground);
+  --color-destructive: var(--sh-destructive);
+  --color-border: var(--sh-border);
+  --color-input: var(--sh-input);
+  --color-ring: var(--sh-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --radius: 0.75rem;
+  --sh-background: #12171e;
+  --sh-foreground: #e8edf3;
+  --sh-card: #1a2129;
+  --sh-card-foreground: #e8edf3;
+  --sh-popover: #1a2129;
+  --sh-popover-foreground: #e8edf3;
+  --sh-primary: #e88238;
+  --sh-primary-foreground: #12171e;
+  --sh-secondary: #262e38;
+  --sh-secondary-foreground: #e8edf3;
+  --sh-muted-foreground: #8b96a4;
+  --sh-accent: #262e38;
+  --sh-accent-foreground: #e8edf3;
+  --sh-destructive: #e26c70;
+  --sh-border: rgba(255, 255, 255, .1);
+  --sh-input: rgba(255, 255, 255, .12);
+  --sh-ring: #e88238;
+}
+
+html[data-theme='light'] {
+  --sh-background: #ffffff;
+  --sh-foreground: #2b333d;
+  --sh-card: #ffffff;
+  --sh-card-foreground: #2b333d;
+  --sh-popover: #ffffff;
+  --sh-popover-foreground: #2b333d;
+  --sh-primary: #e88238;
+  --sh-primary-foreground: #ffffff;
+  --sh-secondary: #f2f4f7;
+  --sh-secondary-foreground: #2b333d;
+  --sh-muted-foreground: #8b96a4;
+  --sh-accent: #f2f4f7;
+  --sh-accent-foreground: #2b333d;
+  --sh-border: rgba(0, 0, 0, .1);
+  --sh-input: rgba(0, 0, 0, .12);
+  --sh-ring: #e88238;
+}
+
+@layer base {
+  [data-slot] {
+    border-color: var(--sh-border);
+  }
+}

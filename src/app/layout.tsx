@@ -4,6 +4,10 @@ import './globals.css'
 import '@/components/premium.css'
 import './theme-glass.css'
 import './fixes.css'
+// Tailwind только для компонентов shadcn. Стоит последним, чтобы утилиты
+// перебивали общие правила, но preflight (сброс браузера) не подключён —
+// он бы поменял отступы и рамки по всему интерфейсу.
+import '@/styles/tailwind.css'
 import type { Theme } from '@/components/Theme'
 import Root from '@/components/Root'
 import Gate from '@/components/Gate'
