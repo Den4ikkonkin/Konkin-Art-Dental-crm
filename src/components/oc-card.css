@@ -6,7 +6,9 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
-  align-items: start;
+  /* stretch, а не start: карточки в ряду выравниваются по самой высокой,
+     поэтому ряд выглядит ровным, даже если где-то врачей больше. */
+  align-items: stretch;
   width: 100%;
 }
 @media (max-width: 1500px) { .oc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -18,9 +20,17 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  height: 500px;
+  /* Высота больше НЕ фиксированная. Раньше было height: 500px при строках
+     44px / 250px / 1fr — нижнему блоку оставалось 166px, а блок врачей
+     (подпись 12 + три кнопки по 34 с промежутками = 129px, плюс строка
+     статуса 30 и даты 22) требует 197px. Третья кнопка «Ижерский»
+     обрезалась свойством overflow: hidden.
+     Теперь высота растёт по содержимому, а stretch в .oc-grid держит
+     все карточки ряда одной высоты. */
+  height: auto;
+  min-height: 520px;
   display: grid;
-  grid-template-rows: 44px 250px 1fr;
+  grid-template-rows: 44px 250px auto;
   row-gap: 8px;
   min-width: 0;
   padding: 12px 14px;
