@@ -115,7 +115,11 @@ export default function UsersPage() {
       headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({ userId, password: next }),
     })
-    if (!res.ok) { setError('Не удалось сбросить пароль'); return }
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}))
+      setError(json.error ?? 'Не удалось сбросить пароль')
+      return
+    }
     setNotice(`Пароль для «${login}» изменён. При следующем входе потребуется смена.`)
   }
 
