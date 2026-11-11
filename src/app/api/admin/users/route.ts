@@ -16,7 +16,7 @@ async function requireAdmin(request: Request): Promise<
   if (!token) return { ok: false, error: 'Нет авторизации: не передан токен сессии', code: 401 }
 
   const client = userClient(token)
-  const { data: auth, error: authError } = await client.auth.getUser()
+  const { data: auth, error: authError } = await client.auth.getUser(token)
   if (authError || !auth.user) {
     return { ok: false, error: 'Сессия недействительна — войдите заново', code: 401 }
   }
