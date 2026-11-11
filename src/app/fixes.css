@@ -811,3 +811,18 @@ html body .queue-card .queue-foot { margin-top: auto; }
   .oc-mini { grid-template-columns: 1fr; }
   .oc-mini > div:nth-child(3) { grid-column: auto; }
 }
+
+/* ============ ВЫДВИЖНАЯ ПАНЕЛЬ НА ТЕЛЕФОНЕ ============ */
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(84vw, 320px);
+    z-index: 50;
+    transform: translateX(-102%);
+    transition: transform .22s ease;
+    overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .workspace { margin-left: 0; width: 100%; }
+}
