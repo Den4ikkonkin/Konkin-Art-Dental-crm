@@ -9,6 +9,7 @@ import { demoState } from '@/lib/demo'
 import { Download, Upload, Sun, Moon, Database, Palette } from 'lucide-react'
 import MemoryPanel from '@/components/MemoryPanel'
 import StorageCard from '@/components/StorageCard'
+import PasswordCard from '@/components/PasswordCard'
 
 export default function Page() {
   const { data, importAll, clearAll, session } = useStore()
@@ -94,6 +95,8 @@ export default function Page() {
 
         <MemoryPanel />
       </div>
+
+      <PasswordCard />
 
       <section className="panel">
         <h2>Единая палитра работ</h2>
