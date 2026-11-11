@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { adminClient, userClient, hasServiceRole } from '@/lib/server-supabase'
+import { adminClient, userClient, hasServiceRole, serverUrl, serverAnonKey } from '@/lib/server-supabase'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -8,28 +8,45 @@ function loginToEmail(login: string): string {
   return `${login.trim().toLowerCase()}@konkin.local`
 }
 
-async function requireAdmin(request: Request): Promise<
-  { ok: true; userId: string } | { ok: false; error: string; code: number }
-> {
+type Guard = { ok: true; userId: string } | { ok: false; error: string; code: number }
+
+async function requireAdmin(request: Request): Promise<Guard> {
   const header = request.headers.get('authorization') ?? ''
-  const token = header.startsWith('Bearer ') ? header.slice(7) : ''
+  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : ''
   if (!token) return { ok: false, error: 'Нет авторизации: не передан токен сессии', code: 401 }
 
   const client = userClient(token)
   const { data: auth, error: authError } = await client.auth.getUser(token)
-  if (authError || !auth.user) {
-    return { ok: false, error: 'Сессия недействительна — войдите заново', code: 401 }
+  if (authError || !auth?.user) {
+    const why = authError?.message ?? 'пользователь по токену не найден'
+    const status = (authError as { status?: number } | null)?.status ?? 'нет'
+    console.error('[admin] getUser failed:', why, status)
+    return {
+      ok: false,
+      error: `Сессия недействительна: ${why} (код ${status}). Выйдите из системы и войдите заново.`,
+      code: 401,
+    }
   }
 
-  const { data: profile } = await client
+  const { data: profile, error: profileError } = await client
     .from('profiles')
     .select('role,status')
     .eq('user_id', auth.user.id)
     .maybeSingle()
 
+  if (profileError) {
+    return { ok: false, error: 'Не удалось прочитать профиль: ' + profileError.message, code: 403 }
+  }
   const row = profile as { role?: string; status?: string } | null
-  if (!row || row.role !== 'admin' || row.status !== 'active') {
-    return { ok: false, error: 'Доступ только для администратора', code: 403 }
+  if (!row) {
+    return { ok: false, error: 'Профиль этого пользователя не найден в базе', code: 403 }
+  }
+  if (row.role !== 'admin' || row.status !== 'active') {
+    return {
+      ok: false,
+      error: `Доступ только для администратора (роль: ${row.role}, статус: ${row.status})`,
+      code: 403,
+    }
   }
   return { ok: true, userId: auth.user.id }
 }
@@ -38,8 +55,7 @@ function noServiceRole() {
   return NextResponse.json(
     {
       error:
-        'На сервере не задан SUPABASE_SERVICE_ROLE_KEY. Добавьте его в .env.local ' +
-        '(локально) или в Vercel → Settings → Environment Variables (на сайте), затем перезапустите.',
+        'На сервере не задан SUPABASE_SERVICE_ROLE_KEY. Добавьте его в Vercel → Settings → Environment Variables для нужного окружения и сделайте Redeploy.',
     },
     { status: 500 },
   )
@@ -68,13 +84,10 @@ export async function POST(request: Request) {
   const admin = adminClient()
   if (!admin) return noServiceRole()
 
-  const email = loginToEmail(body.login)
-  const role = ['admin', 'doctor', 'technician'].includes(body.role ?? '')
-    ? body.role!
-    : 'technician'
+  const role = ['admin', 'doctor', 'technician'].includes(body.role ?? '') ? body.role! : 'technician'
 
   const { data: created, error } = await admin.auth.admin.createUser({
-    email,
+    email: loginToEmail(body.login),
     password: body.password,
     email_confirm: true,
     user_metadata: { display_name: body.displayName ?? body.login, login: body.login },
@@ -145,7 +158,6 @@ export async function PATCH(request: Request) {
   await admin.auth.admin.updateUserById(body.userId, {
     ban_duration: body.status === 'archived' ? '876000h' : 'none',
   })
-
   return NextResponse.json({ ok: true })
 }
 
@@ -164,15 +176,28 @@ export async function PUT(request: Request) {
   if (!admin) return noServiceRole()
 
   const { error } = await admin.auth.admin.updateUserById(body.userId, { password: body.password })
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+  if (error) return NextResponse.json({ error: 'Не удалось сменить пароль: ' + error.message }, { status: 400 })
 
   await admin.from('profiles').update({ must_change_password: true }).eq('user_id', body.userId)
-
   return NextResponse.json({ ok: true })
 }
 
+/** Диагностика. Показывает, к каким проектам Supabase относятся URL и ключ на сервере. Секреты не раскрывает. */
 export async function GET() {
+  const hostRef = (u: string) => {
+    try { return new URL(u).hostname.split('.')[0] } catch { return '?' }
+  }
+  const keyRef = (k: string) => {
+    try {
+      return JSON.parse(Buffer.from(k.split('.')[1] ?? '', 'base64url').toString()).ref ?? '?'
+    } catch { return '?' }
+  }
+  const urlProject = hostRef(serverUrl)
+  const anonKeyProject = keyRef(serverAnonKey)
   return NextResponse.json({
-    serviceRole: hasServiceRole ? 'ключ задан' : 'ключа НЕТ — админские операции не работают',
+    serviceRole: hasServiceRole ? 'ключ задан' : 'ключа НЕТ',
+    urlProject,
+    anonKeyProject,
+    projectsMatch: urlProject === anonKeyProject,
   })
 }
