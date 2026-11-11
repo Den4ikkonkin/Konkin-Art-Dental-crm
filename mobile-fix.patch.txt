@@ -1,0 +1,288 @@
+diff --git a/src/app/globals.css b/src/app/globals.css
+index ab666c4..eb8c214 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -1301,13 +1301,9 @@ html[data-theme='light'] .calendar-legend { border-top-color: #0000000f; }
+   }
+ }
+ @media (max-width: 700px) {
+-  .sidebar {
+-    position: static;
+-    width: 100%;
+-    padding: 12px 14px;
+-    border-right: 0;
+-    border-bottom: 1px solid var(--line);
+-  }
++  /* Боковая панель описана ниже, в @media (max-width: 900px):
++     это выдвижной ящик. Раньше здесь стояло position: static и
++     width: 100% — два взаимоисключающих описания на одном экране. */
+   .app {
+     display: block;
+   }
+@@ -1324,23 +1320,6 @@ html[data-theme='light'] .calendar-legend { border-top-color: #0000000f; }
+   .brand {
+     font-size: 14px;
+   }
+-  .sidebar nav {
+-    display: flex;
+-    overflow-x: auto;
+-    gap: 4px;
+-    margin-top: 10px;
+-  }
+-  .nav {
+-    font-size: 10px;
+-    padding: 9px;
+-    gap: 5px;
+-    flex: 0 0 auto;
+-    margin: 0;
+-  }
+-  .nav svg {
+-    width: 14px;
+-    height: 14px;
+-  }
+   .workspace {
+     margin-left: 0;
+   }
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 855662a..8cc7f41 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -4,6 +4,7 @@ import './globals.css'
+ import '@/components/premium.css'
+ import './theme-glass.css'
+ import './fixes.css'
++import './mobile.css'
+ import type { Theme } from '@/components/Theme'
+ import Root from '@/components/Root'
+ import Gate from '@/components/Gate'
+diff --git a/src/app/mobile.css b/src/app/mobile.css
+new file mode 100644
+index 0000000..19e7a91
+--- /dev/null
++++ b/src/app/mobile.css
+@@ -0,0 +1,225 @@
++/* ============================================================
++   7. МОБИЛЬНАЯ ВЁРСТКА
++   ------------------------------------------------------------
++   Подключается последним в layout.tsx, после globals.css,
++   premium.css, theme-glass.css и fixes.css. Поэтому при равной
++   специфичности правила отсюда выигрывают.
++
++   ЧТО БЫЛО СЛОМАНО И ПОЧЕМУ
++   В globals.css на телефоне одновременно работали ДВА описания
++   бокового меню:
++     - @media (max-width: 700px) — «полоса сверху»: position: static,
++       width: 100%, а навигация display: flex с горизонтальным скроллом;
++     - @media (max-width: 900px) — «выдвижной ящик»: position: fixed,
++       width: min(84vw, 320px), transform: translateX(-102%).
++   Второй блок идёт позже в файле, поэтому position и width он
++   переопределял. А `.sidebar nav { display: flex }` из блока 700px
++   никто не отменял — навигация оставалась горизонтальной строкой
++   внутри узкого ящика. Отсюда обрезанные «Мои пациен…», пустота
++   посередине и профиль, прижатый вниз через margin-top: auto.
++
++   РЕШЕНИЕ: из блока 700px убраны конфликтующие правила (см. патч),
++   меню описано один раз здесь — как вертикальный список.
++
++   Что НЕ трогается: .metrics и .settings-grid уже перестраиваются
++   на 950px, .theme-choice и .salary-form-row — на 700px и 620px
++   соответственно. Дублировать их здесь незачем.
++   ============================================================ */
++
++@media (max-width: 900px) {
++  /* ---------- Ящик меню ---------- */
++  .sidebar {
++    /* отступы с учётом выреза и домашней полосы iPhone */
++    padding-top: max(18px, env(safe-area-inset-top));
++    padding-bottom: max(18px, env(safe-area-inset-bottom));
++    box-shadow: 0 0 40px rgba(0, 0, 0, .5);
++    overscroll-behavior: contain;
++  }
++
++  .sidebar.open {
++    box-shadow: 0 0 60px rgba(0, 0, 0, .65);
++  }
++
++  /* ---------- Навигация: строго вертикально ---------- */
++  .sidebar > nav {
++    display: flex;
++    flex-direction: column;
++    overflow-x: hidden;
++    overflow-y: auto;
++    -webkit-overflow-scrolling: touch;
++    gap: 2px;
++    margin: 0 -6px;
++    padding: 0 6px;
++  }
++
++  /* Ссылки — строки меню, а не «таблетки» в ряд */
++  .sidebar > nav .nav {
++    flex: 0 0 auto;
++    width: 100%;
++    font-size: 14px;
++    padding: 12px 14px;
++    margin: 2px 0;
++    gap: 11px;
++    justify-content: flex-start;
++    white-space: nowrap;
++  }
++
++  .sidebar > nav .nav svg {
++    width: 18px;
++    height: 18px;
++    flex: 0 0 auto;
++  }
++
++  /* Заголовок раздела: отступ меньше, иначе сверху много пустоты */
++  .sidebar .nav-label {
++    margin: 22px 9px 8px;
++  }
++
++  /* ---------- Шапка ящика ---------- */
++  .sidebar-head {
++    align-items: center;
++    padding-bottom: 4px;
++  }
++
++  .sidebar-head img {
++    max-width: 190px;
++    height: auto;
++  }
++
++  .nav-close {
++    flex: 0 0 auto;
++    width: 38px;
++    height: 38px;
++    border-radius: 10px;
++  }
++
++  /* ---------- Профиль и выход внизу ---------- */
++  .sidebar-bottom {
++    display: flex !important;
++    flex-wrap: wrap;
++    align-items: center;
++    gap: 10px;
++    margin-top: 14px;
++    padding-top: 14px;
++  }
++
++  .sidebar-bottom small {
++    margin-left: 0;
++    flex: 1 1 auto;
++    min-width: 0;
++    overflow: hidden;
++    text-overflow: ellipsis;
++    white-space: nowrap;
++  }
++
++  .sidebar-out {
++    width: 100%;
++    margin-top: 4px;
++    height: 42px;
++    justify-content: center;
++  }
++
++  .nav-scrim {
++    -webkit-tap-highlight-color: transparent;
++  }
++}
++
++/* ---------- Планшет: меню уже иконками, ширину не трогаем ---------- */
++@media (max-width: 950px) and (min-width: 901px) {
++  .sidebar {
++    padding-top: max(26px, env(safe-area-inset-top));
++  }
++}
++
++/* ---------- Телефон ---------- */
++@media (max-width: 700px) {
++  /* Поля ввода не мельче 16px: иначе iOS зумит страницу при фокусе
++     и обратно уже не отъезжает. Из-за этого же формы переводим
++     в одну колонку — две по 16px в 390px не помещаются. */
++  input,
++  select,
++  textarea {
++    font-size: 16px;
++  }
++
++  .form-meta,
++  .bottom-fields {
++    grid-template-columns: 1fr;
++  }
++
++  .bottom-fields .field:last-child {
++    grid-column: auto;
++  }
++
++  /* Кнопки под палец — минимум 42px по высоте */
++  .btn,
++  .btn.small {
++    min-height: 42px;
++  }
++
++  .icon-btn {
++    min-width: 42px;
++    min-height: 42px;
++  }
++
++  /* Карточка наряда: три подколонки в .oc-mini на телефоне тесны */
++  .oc-mini {
++    grid-template-columns: 1fr 1fr;
++    height: auto;
++    row-gap: 6px;
++  }
++
++  .oc-mini > div:nth-child(3) {
++    grid-column: 1 / -1;
++  }
++
++  /* Календарь: дни не должны схлопываться в точку */
++  .calendar-day {
++    min-height: 62px;
++  }
++
++  .calendar-legend {
++    flex-wrap: wrap;
++    gap: 8px 14px;
++  }
++
++  /* Таблицы без класса .responsive: горизонтальный скролл с инерцией */
++  .table-wrap {
++    -webkit-overflow-scrolling: touch;
++    scrollbar-width: thin;
++  }
++
++  .table-wrap table {
++    min-width: 560px;
++  }
++
++  .note,
++  .alert {
++    font-size: 12px;
++  }
++
++  main {
++    padding-bottom: max(23px, env(safe-area-inset-bottom));
++  }
++}
++
++/* ---------- Узкие телефоны (iPhone SE и меньше) ---------- */
++@media (max-width: 400px) {
++  .sidebar {
++    width: 100vw;
++    max-width: 100vw;
++  }
++
++  h1 {
++    font-size: 23px;
++  }
++
++  /* Одна подколонка: в 375px две по 150px не читаются */
++  .oc-mini {
++    grid-template-columns: 1fr;
++  }
++
++  .oc-mini > div:nth-child(3) {
++    grid-column: auto;
++  }
++}

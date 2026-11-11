@@ -284,6 +284,8 @@ th.doctor-col {
   flex-wrap: wrap;
   gap: 10px;
   row-gap: 8px;
+  align-items: center;
+  min-height: 34px;
 }
 
 /* Заголовки страниц переносятся, а не уезжают под кнопки */
@@ -349,15 +351,11 @@ td:first-child span {
    ============================================================ */
 
 /* ---------- Заголовки числовых колонок — по правому краю ---------- */
+/* ---------- Числовые колонки таблиц ---------- */
 table th.num,
 table td.num {
   text-align: right;
   font-variant-numeric: tabular-nums;
-}
-
-/* ---------- Таблица «Врачи»: числа не растягивают колонки ---------- */
-table th.num,
-table td.num {
   white-space: nowrap;
   padding-left: 16px;
 }
@@ -507,12 +505,6 @@ table.responsive td.num {
     row-gap: 4px;
   }
   .patient-stats > span { min-width: 64px; }
-}
-
-/* ---------- Кнопки в шапках панелей ---------- */
-.panel-heading {
-  align-items: center;
-  min-height: 34px;
 }
 
 .panel-heading .row {
@@ -708,3 +700,114 @@ html body .queue-card {
   min-height: 132px;
 }
 html body .queue-card .queue-foot { margin-top: auto; }
+
+/* ============================================================
+   МОБИЛЬНАЯ ВЁРСТКА
+   fixes.css подключён в layout.tsx ПОСЛЕ globals.css, premium.css
+   и theme-glass.css — эти правила выигрывают при равной
+   специфичности. Свой файл и правка layout.tsx не нужны.
+
+   Основа: на телефоне в globals.css работали два описания панели —
+   «полоса сверху» (700px) и «выдвижной ящик» (900px). Ящик
+   побеждал по position, но .sidebar nav оставалась display: flex
+   в строку шрифтом 10px. Отсюда обрезанные пункты и пустота.
+   Теперь меню описано один раз — вертикально.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .sidebar {
+    padding: 18px 14px;
+    padding-top: max(18px, env(safe-area-inset-top));
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+    border-bottom: 0;
+    border-right: 1px solid var(--line);
+    box-shadow: 0 0 40px rgba(0, 0, 0, .5);
+    overscroll-behavior: contain;
+  }
+
+  .sidebar.open { box-shadow: 0 0 60px rgba(0, 0, 0, .65); }
+
+  .sidebar > nav {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 2px;
+    margin: 0 -6px;
+    padding: 0 6px;
+  }
+
+  .sidebar > nav .nav {
+    flex: 0 0 auto;
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 14px;
+    margin: 2px 0;
+    gap: 11px;
+    justify-content: flex-start;
+    white-space: nowrap;
+  }
+
+  .sidebar > nav .nav svg { width: 18px; height: 18px; flex: 0 0 auto; }
+  .sidebar .nav-label { margin: 22px 9px 8px; }
+  .sidebar-head { align-items: center; padding-bottom: 4px; }
+  .sidebar-head img { max-width: 190px; height: auto; }
+  .nav-close { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 10px; }
+
+  .sidebar-bottom {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .sidebar-bottom small {
+    margin-left: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sidebar-out {
+    width: 100%;
+    margin-top: 4px;
+    height: 42px;
+    justify-content: center;
+  }
+
+  .nav-scrim { -webkit-tap-highlight-color: transparent; }
+}
+
+@media (max-width: 700px) {
+  /* 16px: мельче — iOS зумит страницу при фокусе и обратно не отъезжает */
+  input, select, textarea { font-size: 16px; }
+
+  .form-meta, .bottom-fields { grid-template-columns: 1fr; }
+  .bottom-fields .field:last-child { grid-column: auto; }
+
+  .btn, .btn.small { min-height: 42px; }
+  .icon-btn { min-width: 42px; min-height: 42px; }
+
+  /* Карточка наряда: три подколонки в .oc-mini на телефоне тесны */
+  .oc-mini { grid-template-columns: 1fr 1fr; height: auto; row-gap: 6px; }
+  .oc-mini > div:nth-child(3) { grid-column: 1 / -1; }
+
+  .calendar-day { min-height: 62px; }
+  .calendar-legend { flex-wrap: wrap; gap: 8px 14px; }
+  .table-wrap { -webkit-overflow-scrolling: touch; }
+  .table-wrap table { min-width: 560px; }
+  .note, .alert { font-size: 12px; }
+  main { padding-bottom: max(23px, env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 400px) {
+  .sidebar { width: 100vw; max-width: 100vw; }
+  h1 { font-size: 23px; }
+  .oc-mini { grid-template-columns: 1fr; }
+  .oc-mini > div:nth-child(3) { grid-column: auto; }
+}

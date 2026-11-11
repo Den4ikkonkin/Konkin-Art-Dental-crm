@@ -62,7 +62,8 @@ html .calendar-day {
     0 2px 6px rgba(0, 0, 0, .18);
   transform-style: preserve-3d;
   will-change: transform;
-  transition: transform .25s ease-out, box-shadow .3s ease, border-color .3s ease;
+  /* translate — плавный подъём карточки при наведении (правило :hover ниже) */
+  transition: translate .2s ease-out, transform .25s ease-out, box-shadow .3s ease, border-color .3s ease;
 }
 
 /* Рамка карточки нарядов: тусклая, с мягким свечением цвета статуса */
@@ -77,16 +78,6 @@ html .oc-card {
 html .oc-card.is-archived { opacity: .7; }
 
 /* Календарь: рамка по числу пациентов; пустой день — без рамки */
-html .calendar-day.tone-empty { border-color: transparent; }
-html .calendar-day.tone-many {
-  border-color: rgba(79, 165, 132, .42);
-  box-shadow: 0 0 16px -8px rgba(79, 165, 132, .5), 0 10px 26px rgba(0, 0, 0, .30);
-}
-html .calendar-day.tone-big {
-  border-color: rgba(214, 88, 96, .45);
-  box-shadow: 0 0 16px -8px rgba(214, 88, 96, .5), 0 10px 26px rgba(0, 0, 0, .30);
-}
-
 /* Светлая тема: прозрачное тёплое стекло */
 html[data-theme='light'] .oc-card,
 html[data-theme='light'] .calendar-day {
@@ -104,9 +95,6 @@ html[data-theme='light'] .oc-card {
     0 10px 26px rgba(120, 84, 48, .12),
     0 2px 6px rgba(120, 84, 48, .06);
 }
-html[data-theme='light'] .calendar-day.tone-empty { border-color: transparent; }
-html[data-theme='light'] .calendar-day.tone-many { border-color: rgba(76, 158, 119, .55); }
-html[data-theme='light'] .calendar-day.tone-big { border-color: rgba(200, 78, 86, .5); }
 html[data-theme='light'] .oc-mini dd.warn,
 html[data-theme='light'] .oc-rest { color: #D7263D !important; }
 
@@ -170,10 +158,6 @@ html[data-theme='light'] .upload-bar { background: rgba(120, 84, 48, .14); }
 html[data-theme='light'] .upload-bar > i { background: linear-gradient(90deg, #A6AEBA, #C9D2DC); }
 
 /* ---------- Наведение: карточка приподнимается ---------- */
-html .oc-card,
-html .calendar-day {
-  transition: translate .2s ease-out, transform .25s ease-out, box-shadow .3s ease, border-color .3s ease;
-}
 html .oc-card:hover,
 html .calendar-day:hover {
   translate: 0 -5px;

@@ -250,12 +250,22 @@ export function today() {
 export function total(o: { items: { price: number }[] }) {
   return Math.round(o.items.reduce((s, i) => s + i.price, 0) * 100) / 100
 }
-export const money = (n: number) =>
-  new Intl.NumberFormat('ru-RU', {
+/**
+ * Сумма в рублях для интерфейса.
+ *
+ * Копейки показываются только если они реально есть: цены в прайсе целые,
+ * поэтому «6 000,00 ₽» несло ноль информации и не влезало в колонку
+ * карточки наряда — браузер обрезал его многоточием.
+ */
+export const money = (n: number) => {
+  const kopecks = !Number.isInteger(n)
+  return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
     currency: 'RUB',
-    maximumFractionDigits: 2,
+    minimumFractionDigits: kopecks ? 2 : 0,
+    maximumFractionDigits: kopecks ? 2 : 0,
   }).format(n)
+}
 export const formatDate = (s: string) =>
   s ? new Date(s.length === 10 ? s + 'T12:00:00' : s).toLocaleDateString('ru-RU') : '—'
 /* ---------------- Сроки и цвет срочности ---------------- */

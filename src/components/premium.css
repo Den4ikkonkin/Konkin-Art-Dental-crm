@@ -15,6 +15,8 @@ html .order-card {
   background:
     radial-gradient(140% 100% at var(--px, .5) calc(var(--py, .5) * 100%), rgba(255,255,255,.075) 0%, transparent 58%),
     linear-gradient(160deg, rgba(38, 48, 58, .62) 0%, rgba(18, 23, 29, .56) 100%);
+  /* background-clip идёт ПОСЛЕ background: шорткат его иначе перекроет */
+  background-clip: padding-box;
   backdrop-filter: blur(14px) saturate(1.25);
   transform-style: preserve-3d;
   will-change: transform;
@@ -100,10 +102,6 @@ html .order-card:hover { transform: translateY(-6px); }
 
 html .order-card::before,
 .calendar-day::before { z-index: 2; }
-
-html .order-card {
-  background-clip: padding-box;
-}
 .metric {
   background: linear-gradient(135deg, rgba(36,44,54,.66), rgba(18,22,28,.6));
   backdrop-filter: blur(12px);

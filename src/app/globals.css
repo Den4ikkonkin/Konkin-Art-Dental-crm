@@ -536,13 +536,6 @@ footer {
   background: var(--line);
   margin: 20px 0;
 }
-.deadline {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
-}
 .deadline:last-child {
   border-bottom: 0;
 }
@@ -1179,7 +1172,8 @@ html[data-theme='light'] .calendar-legend { border-top-color: #0000000f; }
   height: 1px;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  /* современная замена clip: rect(0,0,0,0) — прячет так же, но не устарел */
+  clip-path: inset(50%);
   white-space: nowrap;
 }
 .print-sheet h1 {
@@ -1301,18 +1295,12 @@ html[data-theme='light'] .calendar-legend { border-top-color: #0000000f; }
   }
 }
 @media (max-width: 700px) {
-  .sidebar {
-    position: static;
-    width: 100%;
-    padding: 12px 14px;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
   .app {
     display: block;
   }
   .brand {
     justify-content: flex-start;
+    font-size: 14px;
   }
   .brand > span:last-child {
     display: block;
@@ -1320,26 +1308,6 @@ html[data-theme='light'] .calendar-legend { border-top-color: #0000000f; }
   .brand-icon {
     width: 30px;
     height: 32px;
-  }
-  .brand {
-    font-size: 14px;
-  }
-  .sidebar nav {
-    display: flex;
-    overflow-x: auto;
-    gap: 4px;
-    margin-top: 10px;
-  }
-  .nav {
-    font-size: 10px;
-    padding: 9px;
-    gap: 5px;
-    flex: 0 0 auto;
-    margin: 0;
-  }
-  .nav svg {
-    width: 14px;
-    height: 14px;
   }
   .workspace {
     margin-left: 0;
@@ -1614,13 +1582,17 @@ html[data-theme='light'] .file-icon{background:#FDEEDC}
 .file-info{flex:1;min-width:0}
 .file-info b{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file-info small{display:block;margin-top:3px;font-size:10px;color:var(--muted)}
-.inline-icon{vertical-align:-2px;margin-right:5px}
 .alert,.note{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 @media(max-width:700px){.theme-choice{grid-template-columns:1fr}.patient-head{align-items:flex-start}.file-grid{grid-template-columns:1fr}}
 /* ============================================================
    СТЕКЛО И ФОН-ОБЛОЖКА
    Тема переключается атрибутом html[data-theme] (см. layout.tsx).
+
+   Блок намеренно переопределяет фон, рамки и размытие, объявленные выше:
+   это слой стекла поверх базовых стилей. Дубли селекторов здесь ожидаемы,
+   поэтому stylelint на этом участке отключён.
    ============================================================ */
+/* stylelint-disable no-duplicate-selectors -- намеренный слой переопределений */
 
 /* переменные стекла: тёмная тема */
 :root {
@@ -1883,6 +1855,8 @@ html[data-theme='light'] {
   fill: var(--muted);
   font-size: 12px;
 }
+/* stylelint-enable no-duplicate-selectors */
+
 /* ============================================================
    Уведомления (/notifications)
    ============================================================ */
@@ -2819,9 +2793,8 @@ html[data-theme='light'] .quota-dot { background: #C3CCD6; }
 }
 .doctor-chip:hover { border-color: #3d4a58; color: var(--text); }
 .doctor-chip > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.doctor-check { flex: 0 0 auto; }
-
 .doctor-check {
+  flex: 0 0 auto;
   display: grid;
   place-items: center;
   width: 15px;
