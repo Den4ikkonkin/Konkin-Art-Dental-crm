@@ -64,7 +64,7 @@ export default function UsersPage() {
     }
     setBusy(true)
     try {
-      const token = session?.access_token
+      const token = (await supabase.auth.getSession()).data.session?.access_token
       const res = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) },
@@ -84,7 +84,7 @@ export default function UsersPage() {
 
   async function archiveUser(userId: string, login: string) {
     if (!confirm(`Заблокировать вход для «${login}»? Наряды и файлы сохранятся, администратор их видит.`)) return
-    const token = session?.access_token
+    const token = (await supabase.auth.getSession()).data.session?.access_token
     const res = await fetch('/api/admin/users', {
       method: 'PATCH',
       headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) },
@@ -95,7 +95,7 @@ export default function UsersPage() {
   }
 
   async function restoreUser(userId: string) {
-    const token = session?.access_token
+    const token = (await supabase.auth.getSession()).data.session?.access_token
     const res = await fetch('/api/admin/users', {
       method: 'PATCH',
       headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) },
@@ -109,7 +109,7 @@ export default function UsersPage() {
     const next = prompt(`Новый временный пароль для «${login}» (не короче 8 символов):`)
     if (!next) return
     if (next.length < 8) { setError('Пароль не короче 8 символов.'); return }
-    const token = session?.access_token
+    const token = (await supabase.auth.getSession()).data.session?.access_token
     const res = await fetch('/api/admin/users', {
       method: 'PUT',
       headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) },
