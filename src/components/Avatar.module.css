@@ -1,0 +1,23 @@
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  color: #fff;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: .3px;
+  user-select: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  /* cover: без искажений. 22% сверху — там голова на портрете. */
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+}

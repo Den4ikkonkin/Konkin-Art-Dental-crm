@@ -6,6 +6,7 @@ import { useStore } from '@/components/Store'
 import { Heading, Metrics } from '@/components/UI'
 import OrdersTable from '@/components/OrdersTable'
 import DonutChart from '@/components/DonutChart'
+import TeamPanel from '@/components/TeamPanel'
 import { summarize, total, today } from '@/lib/model'
 import styles from './Home.module.css'
 
@@ -19,6 +20,8 @@ export default function Page() {
   return (
     <div className={styles.home}>
       <Heading title="Всё под контролем" sub="Ваша лаборатория. Ваши работы. Понятная картина каждого дня." />
+      <TeamPanel />
+
       <section className={styles.hero}>
         <div className={styles.copy}>
           <span className="eyebrow">ТОЧНОСТЬ В КАЖДОЙ ДЕТАЛИ</span>

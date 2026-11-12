@@ -385,6 +385,7 @@ type ProfileRow = {
   status: 'active' | 'archived'
   display_name: string | null
   must_change_password: boolean
+  avatar_url: string | null
 }
 
 /**
@@ -399,7 +400,7 @@ export async function loadProfile(): Promise<Profile | null> {
 
   const { data, error } = await supabase
     .from('profiles')
-    .select('user_id,login,role,status,display_name,must_change_password')
+    .select('user_id,login,role,status,display_name,must_change_password,avatar_url')
     .eq('user_id', uid)
     .maybeSingle()
 
@@ -414,6 +415,7 @@ export async function loadProfile(): Promise<Profile | null> {
       status: 'active',
       displayName: '',
       mustChangePassword: false,
+      avatarUrl: '',
     }
   }
 
@@ -425,6 +427,7 @@ export async function loadProfile(): Promise<Profile | null> {
     status: row.status,
     displayName: row.display_name ?? '',
     mustChangePassword: row.must_change_password,
+    avatarUrl: row.avatar_url ?? '',
   }
 }
 

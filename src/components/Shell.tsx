@@ -5,6 +5,7 @@
 // видят разные рабочие пространства, но одну и ту же визуальную систему.
 
 import Link from 'next/link'
+import Avatar from './Avatar'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
@@ -109,9 +110,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="sidebar-bottom">
-          <span className="dot" style={{ background: '#ABD988' }} /> {ROLE_LABEL[role]}
-          <br />
-          <small>{displayName || session?.user.email || 'вход выполнен'}</small>
+          <div className="sidebar-user">
+            <Avatar src={profile?.avatarUrl} name={displayName || 'Вы'} size={34} />
+            <div>
+              <b>{displayName || 'Без имени'}</b>
+              <small>{ROLE_LABEL[role]}</small>
+            </div>
+          </div>
           <button type="button" className="btn small full sidebar-out" onClick={() => void signOut()}>
             <LogOut size={14} /> Выйти
           </button>

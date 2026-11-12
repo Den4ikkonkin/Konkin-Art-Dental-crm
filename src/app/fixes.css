@@ -842,3 +842,19 @@ html body .queue-card .queue-foot { margin-top: auto; }
     font-size: 14px !important;
   }
 }
+
+
+/* ============ ПОЛЬЗОВАТЕЛЬ В САЙДБАРЕ ============ */
+.sidebar-user { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.sidebar-user > div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sidebar-user b {
+  font-size: 12px; font-weight: 600; color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sidebar-user small { font-size: 10px; color: var(--muted); line-height: 1; }
+
+/* В свёрнутой панели (планшет) остаётся только кружок */
+@media (max-width: 950px) and (min-width: 901px) {
+  .sidebar-user > div { display: none; }
+  .sidebar-user { justify-content: center; }
+}

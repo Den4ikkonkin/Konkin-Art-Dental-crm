@@ -14,6 +14,8 @@ export type Profile = {
   status: ProfileStatus
   displayName: string
   mustChangePassword: boolean
+  /** Путь к фото: /team/<login>.png. Пусто — показываются инициалы. */
+  avatarUrl: string
 }
 
 /** Кто может войти. Архивный пользователь не входит никогда. */
