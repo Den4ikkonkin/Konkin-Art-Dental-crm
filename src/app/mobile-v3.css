@@ -1,0 +1,309 @@
+/* ============================================================
+   МОБИЛЬНЫЙ СЛОЙ v3 — подключён последним (после mobile-v2.css)
+   1. Календарь: квадратные ячейки, слегка скруглённые углы
+   2. Наряды: 4 карточки на экран (2×2)
+   3. Пациенты: ровная статистика и кнопки
+   4. Файлы пациента: раскрытие не расширяет карточку
+   5. Форма наряда: конструкции слева, FDI справа
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  /* ---------- 1. Календарь ---------- */
+  .calendar-grid,
+  .payment-grid {
+    gap: 4px;
+  }
+  .calendar-day,
+  .payment-grid .calendar-day {
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    height: auto;
+    padding: 3px;
+    border-radius: 4px;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+    text-align: center;
+    overflow: hidden;
+    transform: none !important;
+  }
+  .calendar-day b.calendar-num {
+    font-size: 10px;
+    line-height: 1;
+  }
+  .calendar-day .payment-sum,
+  .calendar-day span {
+    font-size: 7px;
+    line-height: 1.1;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: -.1px;
+  }
+  .calendar-day::before,
+  .calendar-day::after { display: none; }
+
+  /* ---------- 2. Наряды: 4 карточки на экран ---------- */
+  .oc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .oc-card {
+    grid-template-rows: 22px 96px auto;
+    row-gap: 4px;
+    padding: 6px 7px;
+    border-radius: 10px;
+    min-height: 0;
+    height: auto;
+  }
+  .oc-head { height: 22px; }
+  .oc-num { font-size: 10px; }
+  .oc-name { font-size: 11px; }
+  .oc-teeth { height: 96px; }
+  .oc-teeth svg { height: 96px !important; }
+  .oc-mini dt { display: none; }
+  .oc-mini { grid-template-columns: 1fr 1fr; height: auto; }
+  .oc-mini dd { font-size: 10px; }
+  .oc-doctors-label { display: none; }
+  .oc-doctor { height: 20px; font-size: 9px; padding: 0 5px; }
+  .oc-doctor-check { width: 10px; height: 10px; }
+  .oc-doctor-check svg { width: 8px; height: 8px; }
+  .paid-toggle.compact, .status.compact { font-size: 9px; padding: 2px 5px; }
+  .oc-btn { height: 22px; width: 22px; }
+
+  /* ---------- 3. Пациенты: ровный список ---------- */
+  .patient-card {
+    padding: 12px;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .patient-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    min-width: 0;
+  }
+  .patient-main { min-width: 0; }
+  .patient-main b {
+    display: block;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .patient-main small {
+    display: block;
+    font-size: 10.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .patient-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    align-items: stretch;
+    width: 100%;
+  }
+  .patient-stats > span,
+  .patient-stats > .size-pill {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    min-height: 44px;
+    padding: 6px 7px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .03);
+    border: 1px solid var(--line);
+  }
+  .patient-stats small {
+    font-size: 8.5px;
+    line-height: 1.1;
+    letter-spacing: .2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .patient-stats b,
+  .patient-stats .size-pill {
+    font-size: 12px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .patient-stats .size-pill {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .patient-card > .row.nowrap,
+  .patient-head > .row.nowrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px 40px;
+    gap: 6px;
+    width: 100%;
+    align-items: stretch;
+  }
+  .patient-card > .row.nowrap > .btn,
+  .patient-head > .row.nowrap > .btn {
+    height: 40px;
+    min-height: 40px;
+    width: 100%;
+    font-size: 12px;
+    padding: 0 10px;
+    justify-content: center;
+  }
+  .patient-card > .row.nowrap > .icon-btn,
+  .patient-head > .row.nowrap > .icon-btn {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    flex: none;
+  }
+
+  /* ---------- 4. Файлы пациента: раскрытие не растягивает карточку ---------- */
+  .files-panel {
+    margin: 10px 0 0;
+    padding: 10px;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .files-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .files-head h3 { font-size: 13px; margin: 0; }
+  .files-head > div:first-child { min-width: 0; }
+  .files-head small,
+  .files-head .muted {
+    display: block;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .files-head .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: 6px;
+    width: 100%;
+  }
+  .files-head .row > * {
+    min-width: 0;
+    width: 100%;
+    height: 38px;
+    font-size: 11px;
+    padding: 0 8px;
+    justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .file-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 6px;
+    min-width: 0;
+  }
+  .file-card {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 8px;
+    gap: 8px;
+  }
+  .file-card b, .file-card span, .file-card small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .files-panel .note,
+  .files-panel .alert {
+    font-size: 10.5px;
+    overflow: hidden;
+  }
+
+  /* ---------- 5. Форма наряда: конструкции слева, FDI справа ---------- */
+  .designer-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) !important;
+    grid-template-areas: "work chart" "params params" !important;
+    gap: 8px !important;
+    align-items: start;
+  }
+  .designer-grid > .panel:nth-child(1) { grid-area: work; }
+  .designer-grid > .panel:nth-child(2) { grid-area: chart; }
+  .designer-grid > .panel:nth-child(3) { grid-area: params; }
+  .designer-grid .panel { padding: 8px !important; min-height: 0 !important; border-radius: 12px; min-width: 0; }
+  .designer-grid .panel-heading { margin-bottom: 6px; gap: 4px; flex-wrap: nowrap; }
+  .designer-grid .panel-heading h2 { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .designer-grid .step { width: 18px; height: 18px; font-size: 9px; }
+  .designer-grid .panel-heading .badge { font-size: 8.5px; padding: 2px 5px; }
+  .designer-grid .muted.small,
+  .designer-grid .note { display: none; }
+
+  .work-tiles {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 4px !important;
+    margin-top: 4px !important;
+  }
+  .work-tile {
+    min-height: 36px !important;
+    padding: 4px 5px !important;
+    gap: 5px !important;
+    border-radius: 8px !important;
+  }
+  .work-tile .work-icon { width: 16px !important; height: 20px !important; flex-basis: 16px !important; font-size: 11px !important; border-radius: 5px; }
+  .work-tile .icon { width: 12px !important; height: 15px !important; }
+  .work-tile strong { font-size: 9.5px !important; line-height: 1.15 !important; -webkit-line-clamp: 1 !important; line-clamp: 1 !important; }
+  .work-tile small { display: none; }
+  .work-tile .dot { width: 6px; height: 6px; }
+
+  .tooth-chart svg {
+    max-height: 210px !important;
+    width: 100% !important;
+    height: auto;
+  }
+  .tooth-chart p { display: none; }
+  .chart-panel .badge { display: none; }
+  .chart-panel .row.spread { flex-wrap: wrap; gap: 4px; }
+  .chart-panel .row.spread .muted.small { display: none; }
+  .chart-panel .row.spread .row { gap: 4px; width: 100%; }
+  .chart-panel .row.spread .btn.small { flex: 1 1 0; height: 30px; font-size: 10px; padding: 0 6px; }
+
+  .palette { padding: 6px 5px; gap: 4px; }
+  .swatch { height: 26px !important; font-size: 8.5px !important; }
+}
+
+/* Совсем узкие телефоны (iPhone SE и меньше) */
+@media (max-width: 380px) {
+  .calendar-day b.calendar-num { font-size: 9px; }
+  .calendar-day span { font-size: 6px; }
+  .patient-stats small { font-size: 7.5px; }
+  .patient-stats b { font-size: 11px; }
+  .oc-grid { gap: 4px; }
+  .oc-card { padding: 5px; }
+  .designer-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr) !important; }
+}
