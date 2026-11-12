@@ -59,7 +59,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
   return (
     <button
       type="button"
-      className={compact ? 'icon-btn' : 'btn'}
+      className={compact ? 'icon-btn' : 'btn theme-label'}
       onClick={toggle}
       title={`Включить ${next} тему`}
       aria-label={`Включить ${next} тему`}
