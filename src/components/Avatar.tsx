@@ -16,7 +16,11 @@ type Props = {
   src?: string
   /** Имя для инициалов и подсказки при наведении. */
   name: string
-  /** Диаметр в пикселях. */
+  /**
+   * Диаметр в пикселях. Если не указан, размер задаёт родитель через
+   * className (width + aspect-ratio): так аватарка подстраивается под
+   * ширину экрана, а не торчит из неё фиксированным квадратом.
+   */
   size?: number
   className?: string
 }
@@ -36,7 +40,7 @@ function hue(name: string): number {
   return h
 }
 
-export default function Avatar({ src, name, size = 44, className }: Props) {
+export default function Avatar({ src, name, size, className }: Props) {
   const [broken, setBroken] = useState(false)
   const showImage = Boolean(src) && !broken
   const label = initials(name)
@@ -45,13 +49,16 @@ export default function Avatar({ src, name, size = 44, className }: Props) {
     <span
       className={[styles.avatar, className].filter(Boolean).join(' ')}
       style={{
-        width: size,
-        height: size,
-        // Кегль инициалов пропорционален кружку, иначе на 28px не влезают.
-        fontSize: Math.max(10, Math.round(size * 0.34)),
-        background: showImage ? undefined : `hsl({{hue}} 42% 38%)`.replace('{{hue}}', String(hue(name || '?'))),
+        // Фиксированный размер — только если родитель его попросил.
+        ...(size ? { width: size, height: size } : null),
+        ...(size
+          ? { fontSize: Math.max(10, Math.round(size * 0.34)) }
+          : null),
+        // Фон нужен только инициалам; картинка перекрывает его собой.
+        background: showImage ? undefined : `hsl(${hue(name || '?')} 42% 38%)`,
       }}
       title={name}
+      role="img"
       aria-label={name}
     >
       {showImage ? (

@@ -119,9 +119,9 @@ export type NavItem = { href: string; label: string; icon: string }
 
 export const NAV: Record<Role, NavItem[]> = {
   technician: [
-    { href: '/queue', label: 'Моя очередь', icon: 'layout' },
-    { href: '/orders', label: 'Мои наряды', icon: 'clipboard' },
-    { href: '/patients', label: 'Мои пациенты', icon: 'users' },
+    { href: '/queue', label: 'Статус', icon: 'layout' },
+    { href: '/orders', label: 'Наряды', icon: 'clipboard' },
+    { href: '/patients', label: 'Пациенты', icon: 'users' },
     { href: '/portfolio', label: 'Портфолио', icon: 'image' },
     { href: '/earnings', label: 'Зарплата', icon: 'chart' },
     { href: '/calendar', label: 'Календарь', icon: 'calendar' },
@@ -129,9 +129,9 @@ export const NAV: Record<Role, NavItem[]> = {
     { href: '/settings', label: 'Настройки', icon: 'settings' },
   ],
   doctor: [
-    { href: '/', label: 'Моя сводка', icon: 'layout' },
-    { href: '/patients', label: 'Мои пациенты', icon: 'users' },
-    { href: '/materials', label: 'Мои материалы', icon: 'folder' },
+    { href: '/', label: 'Сводка', icon: 'layout' },
+    { href: '/patients', label: 'Пациенты', icon: 'users' },
+    { href: '/materials', label: 'Материалы', icon: 'folder' },
     { href: '/technicians', label: 'Техники', icon: 'wrench' },
     { href: '/portfolio', label: 'Портфолио', icon: 'image' },
     { href: '/handoffs', label: 'Переданные пациенты', icon: 'send' },

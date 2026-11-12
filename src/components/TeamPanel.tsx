@@ -5,11 +5,12 @@
 // Администратора в блоке не показываем.
 
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { useStore } from './Store'
 import Avatar from './Avatar'
-import { today } from '@/lib/model'
+import { today, type Order, type Patient } from '@/lib/model'
 import styles from './TeamPanel.module.css'
 
 type Member = {
@@ -19,19 +20,6 @@ type Member = {
   role: 'admin' | 'doctor' | 'technician'
   avatar_url: string | null
 }
-
-type Order = {
-  id: string
-  number: number
-  patientId: string
-  dueDate: string
-  status: string
-  doctor?: string
-  technician?: string
-  items: { price: number }[]
-}
-
-type Patient = { id: string; name: string }
 
 const ROLE_LABEL: Record<string, string> = {
   admin: 'Администратор',
@@ -106,7 +94,7 @@ export default function TeamPanel() {
                 onClick={() => setOpenId(m.user_id)}
                 aria-label={`Открыть карточку: ${name}`}
               >
-                <Avatar src={photoSrc(m)} name={name} size={150} />
+                <Avatar src={photoSrc(m)} name={name} className={styles.fill} />
               </button>
               <b>{name}</b>
               <small>{isMe ? 'это вы' : ROLE_LABEL[m.role] ?? m.role}</small>
@@ -119,8 +107,9 @@ export default function TeamPanel() {
         <MemberModal
           member={opened}
           isMe={opened.user_id === session?.user.id}
-          orders={data.orders as Order[]}
-          patients={data.patients as Patient[]}
+          canSeeAll={realRole === 'admin'}
+          orders={data.orders}
+          patients={data.patients}
           onClose={() => setOpenId(null)}
         />
       )}
@@ -129,10 +118,11 @@ export default function TeamPanel() {
 }
 
 function MemberModal({
-  member, isMe, orders, patients, onClose,
+  member, isMe, canSeeAll, orders, patients, onClose,
 }: {
   member: Member
   isMe: boolean
+  canSeeAll: boolean
   orders: Order[]
   patients: Patient[]
   onClose: () => void
@@ -141,7 +131,8 @@ function MemberModal({
   const nameKey = norm(name)
   const loginKey = norm(member.login)
 
-  // Наряды, где сотрудник указан техником или врачом (по имени или логину)
+  // Наряды, где сотрудник указан техником или врачом.
+  // Сопоставляем по имени из профиля и на всякий случай по логину.
   const mine = useMemo(
     () =>
       orders
@@ -153,6 +144,10 @@ function MemberModal({
         .sort((a, b) => a.dueDate.localeCompare(b.dueDate)),
     [orders, nameKey, loginKey],
   )
+
+  // Если смотреть чужую карточку не администратором, RLS отдаёт только
+  // свои наряды. Пустой список тогда означает «не видно», а не «нет работы».
+  const restricted = !isMe && !canSeeAll
 
   const active = mine.filter((o) => o.status !== 'done').length
   const done = mine.length - active
@@ -176,7 +171,8 @@ function MemberModal({
     ...Array.from({ length: offset }, () => null),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ]
-  const iso = (d: number) => `${year}-${String(mon + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+  const iso = (d: number) =>
+    `${year}-${String(mon + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
   const todayIso = today()
 
   useEffect(() => {
@@ -190,15 +186,26 @@ function MemberModal({
     }
   }, [onClose])
 
-  const patientName = (id: string) => patients.find((p) => p.id === id)?.name ?? '—'
+  const patientName = (id: string) =>
+    patients.find((p) => p.id === id)?.name ?? '—'
 
-  return (
-    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-label={name}>
+  // Портал в body: иначе карточку обрежет любой родитель с transform
+  // или overflow — на телефоне это ломает полноэкранное затемнение.
+  const content = (
+    <div
+      className={styles.overlay}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={name}
+    >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button type="button" className={styles.close} onClick={onClose} aria-label="Закрыть">✕</button>
 
         <div className={styles.top}>
-          <Avatar src={photoSrc(member)} name={name} size={200} className={styles.big} />
+          <div className={styles.bigWrap}>
+            <Avatar src={photoSrc(member)} name={name} className={styles.fill} />
+          </div>
           <div className={styles.who}>
             <span className={styles.eyebrow}>
               {ROLE_LABEL[member.role] ?? member.role}{isMe ? ' · это вы' : ''}
@@ -244,7 +251,13 @@ function MemberModal({
 
           <div className={styles.works}>
             <h4>Наряды и работы</h4>
-            {mine.length === 0 && <div className={styles.empty}>Нарядов пока нет</div>}
+            {!mine.length && (
+              <div className={styles.empty}>
+                {restricted
+                  ? 'Наряды этого сотрудника недоступны вашей роли'
+                  : 'Нарядов пока нет'}
+              </div>
+            )}
             {mine.map((o) => (
               <Link key={o.id} href={`/orders/${o.id}`} className={styles.work} onClick={onClose}>
                 <span className={styles.num}>№{o.number}</span>
@@ -262,4 +275,6 @@ function MemberModal({
       </div>
     </div>
   )
+
+  return createPortal(content, document.body)
 }
