@@ -1,0 +1,433 @@
+/* ============================================================
+   МОБИЛЬНЫЙ СЛОЙ: ровные карточки, короткий скролл, читаемый текст
+   ------------------------------------------------------------
+   Подключается последним (layout.tsx), поэтому перекрывает
+   globals.css и theme-glass.css без !important в большинстве мест.
+
+   ЧТО ЧИНИТ
+   1. Длинные подписи раздували кнопки и ломали сетку строки.
+   2. Заголовки и подзаголовки занимали треть первого экрана.
+   3. В форме наряда панель «Сохранить» стояла в самом низу —
+      до неё нужно было прокрутить четыре экрана.
+   4. Схема зубов на телефоне была выше самого экрана.
+   5. Кнопки разной высоты выстраивались «лестницей».
+   ============================================================ */
+
+@media (max-width: 700px) {
+  /* ---------- 1. Кнопки: одна высота, текст не переносится ---------- */
+  .btn,
+  .btn.small,
+  .topbar .btn {
+    height: 44px;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 12.5px;
+    line-height: 1;
+    /* Длинная подпись обрезается, а не сжимает соседей */
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+
+  .btn.primary { font-size: 13px; }
+
+  .icon-btn {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    flex: 0 0 44px;
+  }
+
+  /* Строка с кнопками: если не влезают — переносятся целиком,
+     а не сплющиваются в кашу */
+  .row { gap: 8px; flex-wrap: wrap; }
+  .row.nowrap { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .row.nowrap::-webkit-scrollbar { display: none; }
+
+  /* ---------- 2. Шапка страницы: компактно, длинный текст под нож ---------- */
+  .page-heading {
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .page-heading .eyebrow {
+    font-size: 9px;
+    letter-spacing: 1.6px;
+    margin-bottom: 4px;
+  }
+
+  .page-heading h1 {
+    font-size: 21px;
+    line-height: 1.2;
+    margin: 0 0 4px;
+  }
+
+  /* Подзаголовок был на 2–3 строки и выталкивал форму вниз.
+     Обрезаем до одной строки: смысл уже в заголовке. */
+  .page-heading p {
+    font-size: 11.5px;
+    line-height: 1.45;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  /* Кнопка «К нарядам» и подобные — в строку с заголовком, но
+     под ним, чтобы не сжимать h1 */
+  .page-heading .btn {
+    margin-top: 10px;
+    width: auto;
+    align-self: flex-start;
+  }
+
+  /* ---------- 3. Панели: ровные отступы, без лишней высоты ---------- */
+  .panel {
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+  }
+
+  .panel-heading {
+    min-height: 0;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+
+  .panel-heading h2 { font-size: 14px; }
+
+  .dashboard-grid { gap: 12px; }
+
+  .form-meta,
+  .bottom-fields {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  /* Поле формы: подпись мелкая, инпут — фиксированной высоты,
+     чтобы все поля стояли ровно */
+  .field { gap: 5px; }
+  .field > span,
+  .field > label {
+    font-size: 10.5px;
+    letter-spacing: .2px;
+  }
+  .field input,
+  .field select {
+    height: 44px;
+    padding: 0 11px;
+    font-size: 16px;      /* 16px: iOS не зумит при фокусе */
+    border-radius: 10px;
+  }
+  .field textarea {
+    padding: 10px 11px;
+    font-size: 16px;
+    border-radius: 10px;
+    min-height: 62px;
+  }
+
+  /* Подпись врача: чипы в две колонки одной высоты, имя обрезается */
+  .doctor-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .doctor-chip {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 12px;
+    min-width: 0;
+  }
+  .doctor-chip > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  /* ---------- 4. Форма наряда: минимальный скролл ---------- */
+  .designer-grid {
+    gap: 12px;
+  }
+  .designer-grid .panel {
+    min-height: 0;
+    padding: 14px;
+  }
+
+  /* Конструкции: две колонки вместо столбца — экономит ~180px */
+  .work-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .work-tile {
+    padding: 10px 9px;
+    gap: 8px;
+    border-radius: 11px;
+    /* Одинаковая высота у всех плиток, иначе ряд «дышит» */
+    min-height: 62px;
+    align-items: center;
+  }
+
+  .work-tile .work-icon {
+    width: 28px;
+    height: 32px;
+    flex: 0 0 28px;
+  }
+  .work-tile .icon { width: 20px; height: 24px; }
+
+  /* Название конструкции в две строки максимум, с многоточием */
+  .work-tile strong {
+    font-size: 11.5px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .work-tile small {
+    font-size: 9.5px;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Схема зубов: на телефоне была выше экрана, теперь вписана */
+  .tooth-chart svg {
+    max-height: 340px;
+    margin: 0 auto;
+  }
+  .tooth-chart p { font-size: 10.5px; }
+
+  /* Служебные пояснения на телефоне только мешают: смысл уже в шагах */
+  .designer-grid .note,
+  .designer-grid .panel > .muted.small {
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .step {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+
+  .estimate {
+    margin: 12px 0;
+    padding: 11px;
+  }
+  .estimate strong { font-size: 19px; }
+
+  /* ---------- 5. Панель сохранения: прилипает к низу экрана ---------- */
+  .save-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin: 14px -14px -14px;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--panel);
+    /* Стекло: под панелью видно контент, но кнопка всегда читаема */
+    background: color-mix(in srgb, var(--panel) 92%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .save-bar > div {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .save-bar > div > span {
+    font-size: 9.5px;
+    letter-spacing: .3px;
+  }
+
+  .save-bar strong {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .save-bar small {
+    font-size: 9.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Кнопка сохранения не сжимается и не переносится на две строки */
+  .save-bar .btn {
+    flex: 0 0 auto;
+    height: 44px;
+    padding: 0 16px;
+    font-size: 12.5px;
+  }
+
+  /* ---------- 6. Таблицы: горизонтальный скролл вместо «каши» ---------- */
+  .table-wrap {
+    margin: 0 -14px;
+    padding: 0 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrap table {
+    /* Узкие колонки вместо min-width: 700px, иначе таблица позиций
+       наряда уезжает на два экрана вправо */
+    min-width: 520px;
+    font-size: 12px;
+  }
+
+  .table-wrap th {
+    font-size: 10px;
+    letter-spacing: .3px;
+  }
+
+  .price-input {
+    width: 74px;
+    height: 36px;
+    padding: 0 8px;
+    font-size: 15px;
+  }
+
+  /* ---------- 7. Очередь и карточки: ровная сетка ---------- */
+  .queue-grid { gap: 10px; }
+  .queue-card,
+  .oc-card { border-radius: 13px; }
+
+  /* ---------- 8. Метрики: две колонки одной высоты ---------- */
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .metric {
+    padding: 12px;
+    border-radius: 13px;
+    min-height: 84px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .metric strong { font-size: 21px; }
+
+  /* Подпись метрики не должна распирать карточку */
+  .metric > span {
+    font-size: 9.5px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .metric small {
+    font-size: 9px;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ---------- 9. Верхняя панель: заголовок не сжимает кнопки ---------- */
+  .topbar {
+    height: 58px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .topbar strong {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .topbar .btn { padding: 0 12px; }
+
+  /* ---------- 10. Мелочи, которые ломали ровность ---------- */
+  main {
+    padding: 16px 12px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  h1 { font-size: 21px; }
+  h2 { font-size: 14px; }
+
+  .alert,
+  .note {
+    font-size: 11.5px;
+    line-height: 1.45;
+    padding: 10px 12px;
+    border-radius: 11px;
+  }
+
+  .empty {
+    font-size: 12px;
+    padding: 18px 8px;
+  }
+
+  .deadline {
+    padding: 10px 11px;
+    gap: 9px;
+    border-radius: 11px;
+  }
+
+  .date-chip { font-size: 13px; }
+  .date-chip small { font-size: 8px; }
+
+  .deadline b {
+    font-size: 12.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+  .deadline small { font-size: 10px; }
+
+  .badge {
+    font-size: 9.5px;
+    padding: 4px 8px;
+    white-space: nowrap;
+  }
+}
+
+/* Совсем узкие экраны: ещё плотнее, но читаемо */
+@media (max-width: 380px) {
+  .btn, .btn.small { font-size: 12px; padding: 0 11px; }
+  .page-heading h1 { font-size: 19px; }
+  .panel { padding: 12px; }
+  .work-tiles { gap: 6px; }
+  .work-tile { padding: 9px 8px; min-height: 58px; }
+  .metric { padding: 10px; min-height: 78px; }
+  .metric strong { font-size: 19px; }
+  .save-bar .btn { padding: 0 12px; font-size: 11.5px; }
+  .table-wrap { margin: 0 -12px; padding: 0 12px; }
+}
+
+/* Альбомная ориентация на телефоне: форма наряда в две колонки,
+   как на планшете — так видно больше без прокрутки */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 480px) {
+  .work-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .tooth-chart svg { max-height: 260px; }
+  .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
