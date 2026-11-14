@@ -1,7 +1,6 @@
 'use client'
 
 // Меню «⋯» для действий, которые на телефоне не помещаются в строку.
-// Открывается по кнопке, закрывается по клику вне меню и по Esc.
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { MoreHorizontal } from 'lucide-react'
@@ -48,21 +47,13 @@ export default function MobileMenu({ items, label }: { items: MenuItem[]; label:
           {items.map((it) => (
             <li key={it.label} role="none">
               {it.href ? (
-                <a
-                  role="menuitem"
-                  href={it.href}
-                  className={'mmenu-item' + (it.danger ? ' danger' : '')}
-                  onClick={() => setOpen(false)}
-                >
+                <a role="menuitem" href={it.href} className={'mmenu-item' + (it.danger ? ' danger' : '')}
+                   onClick={() => setOpen(false)}>
                   {it.icon}<span>{it.label}</span>
                 </a>
               ) : (
-                <button
-                  role="menuitem"
-                  type="button"
-                  className={'mmenu-item' + (it.danger ? ' danger' : '')}
-                  onClick={() => { setOpen(false); it.onClick?.() }}
-                >
+                <button role="menuitem" type="button" className={'mmenu-item' + (it.danger ? ' danger' : '')}
+                        onClick={() => { setOpen(false); it.onClick?.() }}>
                   {it.icon}<span>{it.label}</span>
                 </button>
               )}

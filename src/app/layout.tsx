@@ -6,10 +6,6 @@ import './theme-glass.css'
 import './fixes.css'
 // Мобильный слой — последним: перекрывает базовые стили без !important.
 import './mobile.css'
-import './mobile-v2.css'
-import './mobile-v3.css'
-import './mobile-v4.css'
-import './mobile-v5.css'
 // Tailwind только для компонентов shadcn. Стоит последним, чтобы утилиты
 // перебивали общие правила, но preflight (сброс браузера) не подключён —
 // он бы поменял отступы и рамки по всему интерфейсу.

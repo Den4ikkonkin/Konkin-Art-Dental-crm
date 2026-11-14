@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx tests/model.test.ts && tsx tests/yearly.test.ts && tsx tests/roles.test.ts",
     "bot": "tsx scripts/telegram-bot.ts",
-    "net": "tsx scripts/check-net.ts"
+    "net": "tsx scripts/check-net.ts",
+    "check:css": "node scripts/check-css.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

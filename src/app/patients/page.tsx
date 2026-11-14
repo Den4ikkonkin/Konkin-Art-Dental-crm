@@ -7,6 +7,7 @@ import { Heading, Field } from '@/components/UI'
 import PatientFiles from '@/components/PatientFiles'
 import { Patient, total, money, formatDate } from '@/lib/model'
 import { Save, Pencil, Trash2, FolderOpen, ChevronDown } from 'lucide-react'
+import MobileMenu from '@/components/MobileMenu'
 import { driveSizes } from '@/lib/drive'
 import { prettySize } from '@/lib/db'
 
@@ -86,12 +87,17 @@ export default function Page() {
                       <span><small>Сумма</small><b>{money(orders.reduce((s, o) => s + total(o), 0))}</b></span>
                       <span><small>Оплачено</small><b className="green">{money(orders.reduce((s, o) => s + o.paid, 0))}</b></span>
                     </div>
-                    <div className="row nowrap">
+                    <div className="patient-actions">
                       <button type="button" className="btn small" onClick={() => setOpenFiles(opened ? null : p.id)}>
                         <FolderOpen size={15} /> Файлы <ChevronDown size={14} className={opened ? 'flip' : ''} />
                       </button>
-                      <button className="icon-btn" aria-label={'Изменить ' + p.name} onClick={() => setDraft(p)}><Pencil size={16} /></button>
-                      <button className="icon-btn danger" aria-label={'Удалить ' + p.name} onClick={() => void remove(p, orders.length)}><Trash2 size={16} /></button>
+                      <MobileMenu
+                        label={'Действия: ' + p.name}
+                        items={[
+                          { label: 'Изменить', icon: <Pencil size={15} />, onClick: () => setDraft(p) },
+                          { label: 'Удалить', icon: <Trash2 size={15} />, danger: true, onClick: () => void remove(p, orders.length) },
+                        ]}
+                      />
                     </div>
                   </div>
 

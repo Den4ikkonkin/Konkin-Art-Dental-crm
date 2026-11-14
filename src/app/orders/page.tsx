@@ -42,13 +42,26 @@ export default function Page() {
         action={
           <div className={cardStyles.headActions}>
             {!archive && (
-              <div className="pills">
-                {[['all', 'Все'], ...Object.entries(STATUS)].map(([k, v]) => (
-                  <button key={k} className={status === k ? 'active' : ''} onClick={() => setStatus(k)}>
-                    {v}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className="pills status-pills">
+                  {[['all', 'Все'], ...Object.entries(STATUS)].map(([k, v]) => (
+                    <button key={k} className={status === k ? 'active' : ''} onClick={() => setStatus(k)}>
+                      {v}
+                    </button>
+                  ))}
+                </div>
+                <select
+                  className="status-select"
+                  aria-label="Статус наряда"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="all">Все статусы</option>
+                  {Object.entries(STATUS).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+              </>
             )}
 
             <div className="pills" role="group" aria-label="Вид отображения">
@@ -78,7 +91,7 @@ export default function Page() {
       />
 
       {/* Вторая строка: поиск слева, архив справа — рядом */}
-      <div className={cardStyles.topRow}>
+      <div className={cardStyles.topRow + ' orders-tools'}>
         <div className="search">
           <Search size={15} />
           <input
