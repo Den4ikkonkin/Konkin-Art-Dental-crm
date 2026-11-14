@@ -65,7 +65,11 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
       aria-label={`Включить ${next} тему`}
     >
       {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-      {!compact && (theme === 'dark' ? 'Светлая тема' : 'Тёмная тема')}
+      {!compact && (
+        <span className="theme-text">
+          {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+        </span>
+      )}
     </button>
   )
 }
