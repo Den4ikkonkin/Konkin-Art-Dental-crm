@@ -1,269 +1,211 @@
-/* МОБИЛЬНАЯ ВЁРСТКА — единый файл. Подключается последним в layout.tsx.
-   Классы из *.module.css хешируются при сборке (.card → TeamPanel-module__x__card),
-   поэтому правила на них здесь НЕ работают — они живут в своих модулях.
-   Проверка: npm run check:css */
-@media (max-width: 700px) {
-  main { padding: 16px 12px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-  h1 { font-size: 21px; } h2 { font-size: 14px; }
-
-  .btn, .btn.small { height: 44px; min-height: 44px; padding: 0 14px; font-size: 12.5px; line-height: 1;
-    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-wrap: nowrap; }
-  .btn.primary { font-size: 13px; }
-  .icon-btn { width: 44px; min-width: 44px; height: 44px; min-height: 44px; flex: 0 0 44px; }
-
-  .row { gap: 8px; flex-wrap: wrap; }
-  .row.nowrap { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-  .row.nowrap::-webkit-scrollbar { display: none; }
-
-  .panel { padding: 14px; border-radius: 14px; margin-bottom: 12px; max-width: 100%; box-sizing: border-box; }
-  .panel-heading { min-height: 0; margin-bottom: 10px; gap: 8px; }
-  .panel-heading h2 { font-size: 14px; }
-  .dashboard-grid { gap: 12px; }
-  .form-meta, .bottom-fields { gap: 10px; margin-bottom: 12px; }
-
-  .field { gap: 5px; min-width: 0; }
-  .field > span, .field > label { font-size: 10.5px; letter-spacing: .2px; }
-  .field input, .field select { height: 44px; padding: 0 11px; font-size: 16px; border-radius: 10px;
-    width: 100%; min-width: 0; box-sizing: border-box; }
-  .field textarea { padding: 10px 11px; font-size: 16px; border-radius: 10px; min-height: 62px;
-    width: 100%; box-sizing: border-box; }
-
-  .alert, .note { font-size: 11.5px; line-height: 1.45; padding: 10px 12px; border-radius: 11px; }
-  .empty { font-size: 12px; padding: 18px 8px; }
-  .badge { font-size: 9.5px; padding: 4px 8px; white-space: nowrap; }
-  .muted.small { font-size: 10.5px; line-height: 1.4; }
-
-  .page-heading { display: block; margin-bottom: 12px; }
-  .page-heading .eyebrow { display: none; }
-  .page-heading h1 { font-size: 20px; line-height: 1.2; margin: 0 0 4px; }
-  .page-heading p { font-size: 11.5px; line-height: 1.45; margin: 0;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  .topbar { height: auto; min-height: 60px; padding: 8px 12px; gap: 8px; flex-wrap: nowrap; align-items: center; }
-  .topbar-title > div { display: none; }
-  .topbar-title { flex: 0 0 auto; }
-  .topbar .row { gap: 6px; flex-wrap: nowrap; margin-left: auto; }
-  .topbar .icon-btn, .topbar .nav-toggle { width: 44px; min-width: 44px; height: 44px; min-height: 44px;
-    flex: 0 0 44px; padding: 0; }
-  .topbar .icon-btn svg, .topbar .nav-toggle svg { width: 18px; height: 18px; }
-  .topbar .btn.primary { height: 44px; min-height: 44px; padding: 0 14px; font-size: 12.5px; gap: 6px; flex: 0 0 auto; }
-  .topbar .btn.primary svg { width: 16px; height: 16px; }
-  /* Тема: подпись «Светлая тема» скрыта через font-size: 0 — без правки Theme.tsx */
-  .topbar .btn:not(.primary) { width: 44px; min-width: 44px; height: 44px; min-height: 44px;
-    padding: 0; gap: 0; flex: 0 0 44px; font-size: 0; overflow: visible; }
-  .topbar .btn:not(.primary) svg { width: 18px; height: 18px; }
-
-  .oc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 6px !important; }
-  .oc-card { height: 280px !important; min-height: 0 !important; max-height: 280px !important;
-    grid-template-rows: 22px 110px minmax(0, 1fr) !important; row-gap: 3px !important;
-    padding: 6px 7px !important; border-radius: 10px !important; overflow: hidden !important; }
-  .oc-head { height: 22px !important; }
-  .oc-num { font-size: 10px !important; }
-  .oc-top { grid-template-columns: minmax(0, 1fr) 0px !important; }
-  .oc-teeth { height: 110px !important; }
-  .oc-teeth svg { height: 110px !important; }
-  .oc-rail { display: none !important; }
-  .oc-info { gap: 3px !important; min-height: 0; }
-  .oc-row { gap: 4px !important; flex-wrap: nowrap !important; }
-  .oc-mini { gap: 2px !important; height: auto !important; grid-template-columns: 1fr 1fr !important; }
-  .oc-mini dt { display: none !important; }
-  .oc-mini dd { font-size: 10px !important; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .oc-doctors { gap: 2px !important; }
-  .oc-doctors-label { font-size: 9.5px !important; }
-  .oc-doctor { height: 28px !important; font-size: 10px !important; padding: 0 6px !important; }
-  .oc-doctor-name { font-size: 10px !important; }
-  .oc-doctor-check { width: 10px !important; height: 10px !important; }
-  .oc-doctor-check svg { width: 8px !important; height: 8px !important; }
-  .paid-toggle.compact, .status.compact { font-size: 10px !important; padding: 2px 5px !important; white-space: nowrap; }
-
-  .table-wrap { margin: 0 -14px; padding: 0 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .table-wrap table { min-width: 520px; font-size: 12px; }
-  .table-wrap th { font-size: 10px; letter-spacing: .3px; }
-  .price-input { width: 74px; height: 36px; padding: 0 8px; font-size: 15px; }
-
-  .status-pills { display: none !important; }
-  .status-select { width: 100%; height: 40px; padding: 0 10px; font-size: 16px; border-radius: 10px;
-    border: 1px solid var(--line); background: var(--panel2, #1c232b); color: var(--text); }
-  .orders-tools { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; gap: 6px;
-    padding: 6px !important; margin-bottom: 8px !important; }
-  .orders-tools .search { grid-column: 1 / -1; }
-
-  .pills { gap: 4px; padding: 3px; }
-  .pills button { height: 40px; min-height: 40px; padding: 0 12px; font-size: 12px; border-radius: 8px; }
-
-  .archive-bar { display: flex !important; align-items: center; justify-content: space-between;
-    gap: 6px; padding: 0; border: 0 !important; background: none !important; }
-  .archive-bar-text > span { font-size: 11px; }
-  .archive-bar-text > svg { display: none; }
-  .archive-link { height: 40px; padding: 0 10px; font-size: 11px; border-radius: 10px; white-space: nowrap; }
-  .archive-link .archive-count { font-size: 10px; min-width: 20px; height: 18px; }
-
-  .queue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .queue-card { min-height: 0; padding: 11px 12px 10px; gap: 6px; border-radius: 13px; }
-  .queue-card .queue-name { font-size: 11.5px; line-height: 1.25; }
-  .queue-card .queue-count { font-size: 22px; }
-  .queue-card .queue-foot { margin-top: 6px; }
-  .queue-card .queue-foot .btn { height: 34px; min-height: 34px; padding: 0 12px; font-size: 11.5px; }
-  .deadline { padding: 9px 10px; gap: 8px; border-radius: 11px; }
-  .deadline b { font-size: 12px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .deadline small { font-size: 10px; }
-  .date-chip { font-size: 13px; }
-  .date-chip small { font-size: 8px; }
-
-  .calendar-grid, .payment-grid { gap: 4px; }
-  .calendar-day, .payment-grid .calendar-day { aspect-ratio: 1 / 1; min-height: 0; height: auto; padding: 3px;
-    border-radius: 4px; justify-content: center; align-items: center; gap: 1px; text-align: center;
-    overflow: hidden; transform: none !important; }
-  .calendar-day b.calendar-num { font-size: 10px; line-height: 1; }
-  .calendar-day .payment-sum, .calendar-day span { font-size: 7px; line-height: 1.1; max-width: 100%;
-    letter-spacing: -.1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .calendar-day::before, .calendar-day::after { display: none; }
-  .weekday { font-size: 9px; padding: 2px 0; }
-  .payment-detail { padding: 10px; }
-  .payment-detail h3 { font-size: 12px; }
-  .payment-detail li { font-size: 11px; padding: 6px 0; }
-
-  .patient-card { padding: 12px; border-radius: 12px; display: grid; grid-template-columns: minmax(0, 1fr);
-    gap: 10px; min-width: 0; max-width: 100%; overflow: hidden; }
-  .patient-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
-  .patient-main { min-width: 0; }
-  .patient-main b { display: block; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .patient-main small { display: block; font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .patient-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;
-    align-items: stretch; width: 100%; }
-  .patient-stats > span, .patient-stats > .size-pill { display: flex; flex-direction: column;
-    justify-content: space-between; min-width: 0; min-height: 44px; padding: 6px 7px; border-radius: 9px;
-    background: rgba(255, 255, 255, .03); border: 1px solid var(--line); }
-  .patient-stats small { font-size: 10px; line-height: 1.1; letter-spacing: 0; color: var(--muted);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .patient-stats b { font-size: 12px; line-height: 1.1; font-variant-numeric: tabular-nums;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .patient-stats .size-pill { font-size: 10px; color: var(--muted); font-weight: 500; }
-  .patient-actions { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 6px; width: 100%; }
-  .patient-actions > .btn { height: 44px; min-height: 44px; width: 100%; justify-content: center; font-size: 12px; }
-  .patient-order { display: grid; grid-template-columns: 8px auto minmax(0, 1fr) auto auto;
-    align-items: center; gap: 8px; min-height: 24px; font-size: 11.5px; }
-  .patient-order span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  .files-panel { margin: 10px 0 0; padding: 10px; min-width: 0; max-width: 100%; width: 100%;
-    box-sizing: border-box; overflow: hidden; border-radius: 10px; }
-  .files-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin-bottom: 10px; }
-  .files-head h3 { font-size: 13px; margin: 0; }
-  .files-head > div:first-child { min-width: 0; }
-  .files-head small, .files-head .muted { display: block; font-size: 10px;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .files-head .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 6px; width: 100%; }
-  .files-head .row > * { min-width: 0; width: 100%; height: 40px; font-size: 11px; padding: 0 8px;
-    justify-content: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .file-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 6px; min-width: 0; }
-  .file-card { min-width: 0; max-width: 100%; overflow: hidden; padding: 8px; gap: 8px; }
-  .file-card b, .file-card span, .file-card small { overflow: hidden; text-overflow: ellipsis;
-    white-space: nowrap; min-width: 0; }
-  .files-panel .note, .files-panel .alert { font-size: 10.5px; overflow: hidden; }
-
-  .mmenu { position: relative; display: inline-block; }
-  .mmenu-trigger { width: 44px; height: 44px; min-width: 44px; }
-  .mmenu-list { position: absolute; right: 0; top: calc(100% + 6px); z-index: 60; min-width: 180px;
-    margin: 0; padding: 6px; list-style: none; border-radius: 12px; border: 1px solid var(--line);
-    background: var(--panel2, #1c232b); box-shadow: 0 16px 40px -12px rgba(0, 0, 0, .6); }
-  .mmenu-item { display: flex; align-items: center; gap: 10px; width: 100%; height: 44px; padding: 0 12px;
-    border: 0; border-radius: 8px; background: none; color: var(--text); font-size: 13px;
-    text-align: left; text-decoration: none; cursor: pointer; }
-  .mmenu-item:active { background: rgba(255, 255, 255, .06); }
-  .mmenu-item.danger { color: #efa4a1; }
-
-  .designer-grid { display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) !important;
-    grid-template-areas: "work chart" "params params" !important; gap: 8px !important; align-items: start; }
-  .designer-grid > .panel:nth-child(1) { grid-area: work; }
-  .designer-grid > .panel:nth-child(2) { grid-area: chart; }
-  .designer-grid > .panel:nth-child(3) { grid-area: params; }
-  .designer-grid .panel { padding: 8px !important; min-height: 0 !important; border-radius: 12px; min-width: 0; }
-  .designer-grid .panel-heading { margin-bottom: 6px; gap: 4px; flex-wrap: nowrap; }
-  .designer-grid .panel-heading h2 { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .designer-grid .step { width: 18px; height: 18px; font-size: 9px; }
-  .designer-grid .panel-heading .badge { font-size: 8.5px; padding: 2px 5px; }
-  .designer-grid .note { display: none; }
-
-  .work-tiles { display: grid !important; grid-template-columns: minmax(0, 1fr) !important;
-    gap: 4px !important; margin-top: 4px !important; }
-  .work-tile { min-height: 36px !important; padding: 4px 5px !important; gap: 5px !important;
-    border-radius: 8px !important; }
-  .work-tile .work-icon { width: 16px !important; height: 20px !important; flex-basis: 16px !important;
-    font-size: 11px !important; border-radius: 5px; }
-  .work-tile strong { font-size: 9.5px !important; line-height: 1.15 !important; display: -webkit-box;
-    -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-  .work-tile small { display: none; }
-  .work-tile .dot { width: 6px; height: 6px; }
-
-  .tooth-chart svg { max-height: 210px !important; width: 100% !important; height: auto; }
-  .tooth-chart p { display: none; }
-  .chart-panel .badge { display: none; }
-  .chart-panel .row.spread { flex-wrap: wrap; gap: 4px; }
-  .chart-panel .row.spread .muted.small { display: none; }
-  .chart-panel .row.spread .row { gap: 4px; width: 100%; }
-  .chart-panel .row.spread .btn.small { flex: 1 1 0; height: 32px; font-size: 10px; padding: 0 6px; }
-
-  .save-bar { position: sticky; bottom: 0; z-index: 20; flex-direction: row; align-items: center; gap: 10px;
-    margin: 12px -14px -14px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--line);
-    background: color-mix(in srgb, var(--panel) 92%, transparent);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-  .save-bar > div { min-width: 0; flex: 1 1 auto; }
-  .save-bar > div > span { font-size: 9.5px; letter-spacing: .3px; }
-  .save-bar strong { font-size: 18px; line-height: 1.2; }
-  .save-bar small { font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .save-bar .btn { flex: 0 0 auto; height: 44px; padding: 0 16px; font-size: 12.5px; }
-
-  .due-chip { color: #ffffff;
-    background: color-mix(in srgb, var(--tone, #9ba7b5) 62%, #0d1014);
-    border-color: color-mix(in srgb, var(--tone, #9ba7b5) 85%, transparent);
-    font-size: 11.5px; padding: 4px 9px; }
-  .due-chip::before { background: #ffffff; }
-  .quota-note { color: #a7b4c2; font-size: 11px; }
-  .paid-toggle { color: #dfe6ee; }
-  .paid-toggle.on { color: #dff3e6; }
-
-  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .metric { padding: 12px; border-radius: 13px; min-height: 84px; display: flex;
-    flex-direction: column; justify-content: space-between; }
-  .metric strong { font-size: 21px; }
-  .metric > span { font-size: 9.5px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2;
-    line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width:700px){main{padding:16px 12px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+h1{font-size:21px}
+h2{font-size:14px}
+.btn,.btn.small{height:44px;min-height:44px;padding:0 14px;font-size:12.5px;line-height:1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-wrap:nowrap}
+.btn.primary{font-size:13px}
+.icon-btn{width:44px;min-width:44px;height:44px;min-height:44px;flex:0 0 44px}
+.row{gap:8px;flex-wrap:wrap}
+.row.nowrap{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.row.nowrap::-webkit-scrollbar{display:none}
+.panel{padding:14px;border-radius:14px;margin-bottom:12px;max-width:100%;box-sizing:border-box}
+.panel-heading{min-height:0;margin-bottom:10px;gap:8px}
+.panel-heading h2{font-size:14px}
+.dashboard-grid{gap:12px}
+.form-meta,.bottom-fields{gap:10px;margin-bottom:12px}
+.field{gap:5px;min-width:0}
+.field>span,.field>label{font-size:10.5px;letter-spacing:.2px}
+.field input,.field select{height:44px;padding:0 11px;font-size:16px;border-radius:10px;width:100%;min-width:0;box-sizing:border-box}
+.field textarea{padding:10px 11px;font-size:16px;border-radius:10px;min-height:62px;width:100%;box-sizing:border-box}
+.alert,.note{font-size:11.5px;line-height:1.45;padding:10px 12px;border-radius:11px}
+.empty{font-size:12px;padding:18px 8px}
+.badge{font-size:9.5px;padding:4px 8px;white-space:nowrap}
+.muted.small{font-size:10.5px;line-height:1.4}
+.text-link,a.text-link{display:inline-flex;align-items:center;min-height:40px;padding:0 2px;font-size:12px}
 }
-
-@media (max-width: 380px) {
-  .btn, .btn.small { font-size: 12px; padding: 0 11px; }
-  .page-heading h1 { font-size: 19px; }
-  .panel { padding: 12px; }
-  .topbar .icon-btn, .topbar .nav-toggle { width: 42px; min-width: 42px; height: 42px; flex-basis: 42px; }
-  .oc-card { height: 262px !important; max-height: 262px !important; }
-  .oc-teeth { height: 100px !important; }
-  .oc-teeth svg { height: 100px !important; }
-  .oc-doctor { height: 26px !important; font-size: 9.5px !important; }
-  .oc-doctor-name { font-size: 9.5px !important; }
-  .queue-grid { gap: 6px; }
-  .queue-card { padding: 9px 10px; }
-  .queue-card .queue-name { font-size: 10.5px; }
-  .calendar-day b.calendar-num { font-size: 9px; }
-  .calendar-day span { font-size: 6px; }
-  .patient-stats small { font-size: 9px; }
-  .patient-stats b { font-size: 11px; }
-  .designer-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr) !important; }
-  .tooth-chart svg { max-height: 190px !important; }
+@media (max-width:700px){.page-heading{display:block;margin-bottom:12px}
+.page-heading .eyebrow{display:none}
+.page-heading h1{font-size:20px;line-height:1.2;margin:0 0 4px}
+.page-heading p{font-size:11.5px;line-height:1.45;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
-
-@media (max-width: 900px) and (orientation: landscape) and (max-height: 480px) {
-  .oc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-  .oc-card { height: 240px !important; max-height: 240px !important; }
-  .oc-teeth { height: 96px !important; }
-  .oc-teeth svg { height: 96px !important; }
-  .queue-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .work-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-  .tooth-chart svg { max-height: 200px !important; }
+@media (max-width:700px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:8px;flex-wrap:nowrap;align-items:center}
+.topbar-title>div{display:none}
+.topbar-title{flex:0 0 auto}
+.topbar .row{gap:6px;flex-wrap:nowrap;margin-left:auto}
+.topbar .icon-btn,.topbar .nav-toggle{width:44px;min-width:44px;height:44px;min-height:44px;flex:0 0 44px;padding:0}
+.topbar .icon-btn svg,.topbar .nav-toggle svg{width:18px;height:18px}
+.topbar .btn.primary{height:44px;min-height:44px;padding:0 14px;font-size:12.5px;gap:6px;flex:0 0 auto}
+.topbar .btn.primary svg{width:16px;height:16px}
+.topbar .btn:not(.primary){width:44px;min-width:44px;height:44px;min-height:44px;padding:0;gap:0;flex:0 0 44px;font-size:0;overflow:visible}
+.topbar .btn:not(.primary) svg{width:18px;height:18px}
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .calendar-day, .queue-card, .btn { transition: none !important; }
+@media (max-width:700px){.oc-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:6px !important}
+.oc-card{height:auto !important;min-height:0 !important;max-height:none !important;grid-template-rows:auto auto auto !important;row-gap:4px !important;padding:7px 8px 8px !important;border-radius:11px !important;overflow:hidden !important}
+.oc-head{height:auto !important;min-height:0 !important;display:block !important}
+.oc-num{font-size:9px !important;letter-spacing:.3px}
+.oc-head h3{font-size:11px !important;line-height:1.2 !important;margin:0 !important;display:-webkit-box !important;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;white-space:normal !important}
+.oc-top{grid-template-columns:minmax(0,1fr) !important;height:auto !important}
+.oc-rail{display:none !important}
+.oc-teeth{height:88px !important}
+.oc-teeth>*{height:88px !important}
+.oc-teeth svg{height:88px !important;max-height:88px !important;width:auto !important;max-width:100% !important}
+.oc-info{gap:3px !important}
+.oc-row{display:grid !important;grid-template-columns:minmax(0,1fr) !important;height:auto !important;gap:3px !important}
+.oc-row .paid-toggle,.oc-row .paid-toggle.compact{width:100% !important;max-width:100% !important;height:24px !important;font-size:9.5px !important;padding:2px 6px !important;justify-content:flex-start !important}
+.oc-row select.status,select.status.compact{width:100% !important;min-width:0 !important;height:24px !important;font-size:9.5px !important;padding:0 4px !important}
+.paid-toggle-box{width:13px !important;height:13px !important;flex:0 0 13px !important}
+.oc-mini{grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;height:auto !important;gap:2px 4px !important;font-size:9.5px !important;margin:0 !important}
+.oc-mini dt{display:none !important}
+.oc-mini dd{font-size:9.5px !important;margin:0 !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oc-mini>div{min-width:0}
+.oc-doctors{gap:3px !important}
+.oc-doctors-label{display:none !important}
+.oc-doctor{height:24px !important;min-height:24px !important;font-size:10px !important;padding:0 6px !important;gap:5px !important}
+.oc-doctor-name{font-size:10px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.oc-doctor-check{width:11px !important;height:11px !important;flex:0 0 11px !important}
+.oc-doctor-check svg{width:8px !important;height:8px !important}
+}
+@media (max-width:700px){.table-wrap{margin:0 -14px;padding:0 14px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.table-wrap table{font-size:12px}
+.table-wrap th{font-size:10px;letter-spacing:.3px}
+.price-input{width:74px;height:36px;padding:0 8px;font-size:15px}
+.doctor-month-table{min-width:0}
+}
+@media (max-width:700px){.status-pills{display:none !important}
+.status-select{width:100%;height:44px;padding:0 10px;font-size:16px;border-radius:10px;border:1px solid var(--line);background:var(--panel2,#1c232b);color:var(--text)}
+.orders-tools{display:grid !important;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:6px !important;margin-bottom:8px !important}
+.orders-tools .search{grid-column:1 / -1}
+.pills{gap:4px;padding:3px}
+.pills button{height:44px;min-height:44px;min-width:44px;padding:0 12px;font-size:12px;border-radius:8px}
+.archive-bar{display:flex !important;align-items:center;justify-content:space-between;gap:6px;padding:0;border:0 !important;background:none !important}
+.archive-bar-text>span{font-size:11px}
+.archive-bar-text>svg{display:none}
+.archive-link{height:44px;padding:0 12px;font-size:11.5px;border-radius:10px;white-space:nowrap}
+.archive-link .archive-count{font-size:10px;min-width:20px;height:18px}
+}
+@media (max-width:700px){.queue-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.queue-card{min-height:0;padding:11px 12px 10px;gap:6px;border-radius:13px}
+.queue-card .queue-name{font-size:11.5px;line-height:1.25}
+.queue-card .queue-count{font-size:22px}
+.queue-card .queue-foot{margin-top:6px}
+.queue-card .queue-foot .btn{height:38px;min-height:38px;padding:0 14px;font-size:11.5px}
+.deadline{padding:9px 10px;gap:8px;border-radius:11px}
+.deadline b{font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.deadline small,.deadline-main small{font-size:11px}
+.date-chip{font-size:14px}
+.date-chip small{font-size:9.5px}
+}
+@media (max-width:700px){.calendar-grid,.payment-grid{gap:4px}
+.calendar-day,.payment-grid .calendar-day{aspect-ratio:1 / 1;min-height:0;height:auto;padding:3px;border-radius:4px;justify-content:center;align-items:center;gap:1px;text-align:center;overflow:hidden;transform:none !important}
+.calendar-day b.calendar-num{font-size:10px;line-height:1}
+.calendar-day .payment-sum,.calendar-day span{font-size:7.5px;line-height:1.1;max-width:100%;letter-spacing:-.1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.calendar-day::before,.calendar-day::after{display:none}
+.weekday{font-size:9.5px;padding:2px 0}
+.payment-detail{padding:10px}
+.payment-detail h3{font-size:12px}
+.payment-detail li{font-size:11px;padding:6px 0}
+}
+@media (max-width:700px){.patient-card{padding:12px;border-radius:12px;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;min-width:0;max-width:100%;overflow:hidden}
+.patient-head{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
+.patient-main{min-width:0}
+.patient-main b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.patient-main small{display:block;font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.patient-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:stretch;width:100%}
+.patient-stats>span,.patient-stats>.size-pill{display:flex;flex-direction:column;justify-content:space-between;min-width:0;min-height:44px;padding:6px 7px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.patient-stats small{font-size:10px;line-height:1.1;letter-spacing:0;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.patient-stats b{font-size:12px;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.patient-stats .size-pill{font-size:10px;color:var(--muted);font-weight:500}
+.patient-actions{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:6px;width:100%}
+.patient-actions>.btn{height:44px;min-height:44px;width:100%;justify-content:center;font-size:12px}
+.patient-order{display:grid;grid-template-columns:8px auto minmax(0,1fr) auto auto;align-items:center;gap:8px;min-height:24px;font-size:11.5px}
+.patient-order span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.files-panel{margin:10px 0 0;padding:10px;min-width:0;max-width:100%;width:100%;box-sizing:border-box;overflow:hidden;border-radius:10px}
+.files-head{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:10px}
+.files-head h3{font-size:13px;margin:0}
+.files-head>div:first-child{min-width:0}
+.files-head small,.files-head .muted{display:block;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.files-head .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:6px;width:100%}
+.files-head .row>*{min-width:0;width:100%;height:40px;font-size:11px;padding:0 8px;justify-content:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-grid{grid-template-columns:minmax(0,1fr) !important;gap:6px;min-width:0}
+.file-card{min-width:0;max-width:100%;overflow:hidden;padding:8px;gap:8px}
+.file-card b,.file-card span,.file-card small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.files-panel .note,.files-panel .alert{font-size:10.5px;overflow:hidden}
+}
+@media (max-width:700px){.mmenu{position:relative;display:inline-block}
+.mmenu-trigger{width:44px;height:44px;min-width:44px}
+.mmenu-list{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:180px;margin:0;padding:6px;list-style:none;border-radius:12px;border:1px solid var(--line);background:var(--panel2,#1c232b);box-shadow:0 16px 40px -12px rgba(0,0,0,.6)}
+.mmenu-item{display:flex;align-items:center;gap:10px;width:100%;height:44px;padding:0 12px;border:0;border-radius:8px;background:none;color:var(--text);font-size:13px;text-align:left;text-decoration:none;cursor:pointer}
+.mmenu-item:active{background:rgba(255,255,255,.06)}
+.mmenu-item.danger{color:#efa4a1}
+}
+@media (max-width:700px){.designer-grid{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) !important;grid-template-areas:"work chart" "params params" !important;gap:8px !important;align-items:start}
+.designer-grid>.panel:nth-child(1){grid-area:work}
+.designer-grid>.panel:nth-child(2){grid-area:chart}
+.designer-grid>.panel:nth-child(3){grid-area:params}
+.designer-grid .panel{padding:8px !important;min-height:0 !important;border-radius:12px;min-width:0}
+.designer-grid .panel-heading{margin-bottom:6px;gap:4px;flex-wrap:nowrap}
+.designer-grid .panel-heading h2{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.designer-grid .step{width:18px;height:18px;font-size:9px}
+.designer-grid .panel-heading .badge{font-size:8.5px;padding:2px 5px}
+.designer-grid .note{display:none}
+.work-tiles{display:grid !important;grid-template-columns:minmax(0,1fr) !important;gap:4px !important;margin-top:4px !important}
+.work-tile{min-height:42px !important;padding:5px 6px !important;gap:6px !important;border-radius:8px !important}
+.work-tile .work-icon{width:18px !important;height:22px !important;flex-basis:18px !important;font-size:11px !important;border-radius:5px}
+.work-tile strong{font-size:10px !important;line-height:1.2 !important;display:-webkit-box !important;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.work-tile small{display:none}
+.work-tile .dot{width:6px;height:6px}
+.tooth-chart svg{max-height:300px !important;width:100% !important;height:auto}
+.tooth-chart p{display:none}
+.chart-panel .badge{display:none}
+.chart-panel .row.spread{flex-wrap:wrap;gap:4px}
+.chart-panel .row.spread .muted.small{display:none}
+.chart-panel .row.spread .row{gap:4px;width:100%}
+.chart-panel .row.spread .btn.small,.chart-panel .row.spread .btn{flex:1 1 0;min-width:0;height:36px;font-size:10px;padding:0 4px;letter-spacing:-.1px}
+.save-bar{position:sticky;bottom:0;z-index:20;flex-direction:row;align-items:center;gap:10px;margin:12px -14px -14px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:color-mix(in srgb,var(--panel) 92%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.save-bar>div{min-width:0;flex:1 1 auto}
+.save-bar>div>span{font-size:9.5px;letter-spacing:.3px}
+.save-bar strong{font-size:18px;line-height:1.2}
+.save-bar small{font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.save-bar .btn{flex:0 0 auto;height:44px;padding:0 16px;font-size:12.5px}
+}
+@media (max-width:700px){.due-chip{color:#ffffff;background:color-mix(in srgb,var(--tone,#9ba7b5) 72%,#0d1014);border-color:color-mix(in srgb,var(--tone,#9ba7b5) 90%,transparent);font-size:11.5px;padding:4px 9px}
+.due-chip::before{background:#ffffff}
+.quota-note{color:#b6c2cf;font-size:11.5px}
+.paid-toggle{color:#e6edf5}
+.paid-toggle.on{color:#e4f7ea}
+}
+@media (max-width:700px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.metric{padding:12px;border-radius:13px;min-height:84px;display:flex;flex-direction:column;justify-content:space-between}
+.metric strong{font-size:21px}
+.metric>span{font-size:10px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+}
+@media (max-width:380px){.btn,.btn.small{font-size:12px;padding:0 11px}
+.page-heading h1{font-size:19px}
+.panel{padding:12px}
+.topbar .icon-btn,.topbar .nav-toggle{width:42px;min-width:42px;height:42px;flex-basis:42px}
+.oc-teeth{height:78px !important}
+.oc-teeth>*{height:78px !important}
+.oc-teeth svg{height:78px !important;max-height:78px !important}
+.oc-doctor{height:22px !important;min-height:22px !important;font-size:9.5px !important}
+.oc-doctor-name{font-size:9.5px !important}
+.oc-mini dd,.oc-mini{font-size:9px !important}
+.queue-grid{gap:6px}
+.queue-card{padding:9px 10px}
+.queue-card .queue-name{font-size:10.5px}
+.calendar-day b.calendar-num{font-size:9px}
+.calendar-day span{font-size:6.5px}
+.patient-stats small{font-size:9px}
+.patient-stats b{font-size:11px}
+.designer-grid{grid-template-columns:minmax(0,0.9fr) minmax(0,1.3fr) !important}
+.tooth-chart svg{max-height:260px !important}
+}
+@media (max-width:900px) and (orientation:landscape) and (max-height:480px){.oc-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+.oc-teeth{height:84px !important}
+.oc-teeth>*{height:84px !important}
+.oc-teeth svg{height:84px !important;max-height:84px !important}
+.queue-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+.work-tiles{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+.tooth-chart svg{max-height:240px !important}
+}
+@media (prefers-reduced-motion:reduce){.calendar-day,.queue-card,.btn{transition:none !important}
 }
