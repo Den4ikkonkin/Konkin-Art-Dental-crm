@@ -209,3 +209,17 @@ h2{font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){.calendar-day,.queue-card,.btn{transition:none !important}
 }
+@media (max-width:700px){
+footer{display:flex;flex-wrap:wrap;gap:0 14px;font-size:11px;line-height:1.4}
+footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 2px;font-size:12px}
+.legend{gap:2px}
+.legend-row{min-height:44px;height:auto;padding:6px 8px;font-size:12px}
+.legend-row b,.legend-row small{font-size:11.5px}
+.queue-card .queue-foot .btn,.queue-card .queue-foot a.btn{height:44px;min-height:44px;padding:0 16px;font-size:12px}
+.chart-panel .row.spread .btn.small{font-size:9.5px;padding:0 2px;letter-spacing:-.2px}
+.work-tile{min-height:44px !important}
+.doctor-chip{height:44px;min-height:44px}
+.oc-doctor{height:26px !important;min-height:26px !important}
+.oc-doctors{gap:4px !important}
+}
+@media (max-width:700px){.due-chip{background:color-mix(in srgb,var(--tone,#9ba7b5) 42%,#0d1014);border-color:color-mix(in srgb,var(--tone,#9ba7b5) 70%,transparent)}}
