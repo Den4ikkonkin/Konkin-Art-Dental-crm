@@ -223,3 +223,13 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 2px;fo
 .oc-doctors{gap:4px !important}
 }
 @media (max-width:700px){.due-chip{background:color-mix(in srgb,var(--tone,#9ba7b5) 42%,#0d1014);border-color:color-mix(in srgb,var(--tone,#9ba7b5) 70%,transparent)}}
+@media (max-width:700px){
+.sidebar>nav .nav{min-height:44px;padding-top:0;padding-bottom:0;display:flex;align-items:center}
+.table-wrap td{padding-top:6px;padding-bottom:6px}
+.table-wrap td a b{display:inline-flex;align-items:center;min-height:28px;font-size:12px}
+.paid-check{width:30px;height:30px;min-width:30px}
+.oc-row select.status,select.status.compact{height:30px !important;font-size:10.5px !important}
+.oc-row .paid-toggle,.oc-row .paid-toggle.compact{height:30px !important;font-size:10px !important}
+.oc-doctor{height:30px !important;min-height:30px !important;font-size:10.5px !important}
+.oc-doctors{gap:5px !important}
+}
